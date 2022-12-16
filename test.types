@@ -1,0 +1,10 @@
+(define (Lens T P)
+  (if (extends? P (Prefix any {a: true, b: (Prefix any)}))
+  	(if (extends? (First P) (keyof T))
+  		(if (extends? (Shift P) (Prefix any any[]))
+  			(Lens (get T First<P>) (Shift P))
+  			T[(First P)]
+  		)
+  	never)
+  T)
+)
