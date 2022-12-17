@@ -1,10 +1,17 @@
+(define (Prefix P T)
+  [P, ...T]
+)
+
 (define (Lens T P)
-  (if (extends? P (Prefix any {a: true, b: (Prefix any)}))
+  (if (extends? P (Prefix any any[]))
   	(if (extends? (First P) (keyof T))
   		(if (extends? (Shift P) (Prefix any any[]))
-  			(Lens (get T First<P>) (Shift P))
+  			(Lens T[First<P>] (Shift P))
   			T[(First P)]
-  		)
-  	never)
+      )
+    )
   T)
 )
+
+(define Obj {a: number, b: string})
+(define A (Lens T ['a', 'b']))

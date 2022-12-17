@@ -19,7 +19,7 @@
 		"antlr-lexer": "antlr4ts ./grammar/TypeSchemeLexer.g4 -o ./src",
 		"antlr-parser": "antlr4ts -visitor ./grammar/TypeSchemeParser.g4 -o ./src -lib ./src/grammar",
 		"antlr": "npm run antlr-lexer && npm run antlr-parser",
-		"test": "ts-node ./test.ts"
+		"start": "ts-node ./test.ts"
 	},
 	"prettier": {
 		"printWidth": 80,
@@ -31,7 +31,6 @@
 		"antlr4": "^4.11.0",
 		"reflect-metadata": "^0.1.13",
 		"runtypes": "^6.6.0",
-		"ts-morph": "^17.0.1",
-		"z3-solver": "^4.11.2"
+		"ts-morph": "^17.0.1"
 	}
 }
