@@ -7,6 +7,7 @@
 	"license": "MIT",
 	"devDependencies": {
 		"@types/antlr4": "^4.11.2",
+		"@types/lodash": "^4.14.191",
 		"@types/node": "^18.11.11",
 		"antlr4ts": "^0.5.0-alpha.4",
 		"antlr4ts-cli": "^0.5.0-alpha.4",
@@ -29,6 +30,7 @@
 	},
 	"dependencies": {
 		"antlr4": "^4.11.0",
+		"lodash": "^4.17.21",
 		"reflect-metadata": "^0.1.13",
 		"runtypes": "^6.6.0",
 		"ts-morph": "^17.0.1"

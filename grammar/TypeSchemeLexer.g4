@@ -1,4 +1,21 @@
 lexer grammar TypeSchemeLexer;
+// literals
+BooleanLiteral: 'true' | 'false';
+
+StringLiteral: SingleQuotedStringLiteral | DoubleQuotedStringLiteral | BacktickStringLiteral;
+SingleQuotedStringLiteral: QUOTE (EscapeSequence | ~["'\\\r\n])* QUOTE;
+DoubleQuotedStringLiteral: '"' (EscapeSequence | ~["'\\\r\n])* '"';
+BacktickStringLiteral: '`' (EscapeSequence | ~["'\\\r\n])* '`';
+EscapeSequence: '\\' (["\\/bfnrt] | UnicodeEscapeSequence);
+UnicodeEscapeSequence: 'u' HexLiteral HexLiteral HexLiteral HexLiteral;
+// TODO: template strings
+
+// number literal could be hex, octal, binary, decimal
+NumberLiteral: DecimalLiteral | HexLiteral | OctalLiteral | BinaryLiteral;
+HexLiteral: '0' [xX] [0-9a-fA-F]+;
+OctalLiteral: '0' [oO] [0-9]+;
+BinaryLiteral: '0' [bB] [0-1]+;
+DecimalLiteral: [0-9]+ ('.' [0-9]+)?;
 
 LPAREN: '(';
 RPAREN: ')';
@@ -8,13 +25,14 @@ LBRACK: '[';
 RBRACK: ']';
 LANGL: '<';
 RANGL: '>';
-EQUALS: '=';
-NEQ: '!=';
 COLON: ':';
 COMMA: ',';
+AMP: '&';
+BAR: '|';
 SPREAD: '...';
 DOT: '.';
-WS: [ \r\n\t]+ -> skip;
+QUOTE: '\'';
+WS: [ \r\n\t]+ | EOF;
 
 // operators
 KEYOF: 'keyof';
@@ -39,23 +57,5 @@ STRING: 'string';
 NUMBER: 'number';
 BOOLEAN: 'boolean';
 
-// literals
-BooleanLiteral: 'true' | 'false';
-
-StringLiteral: SingleQuotedStringLiteral | DoubleQuotedStringLiteral | BacktickStringLiteral;
-SingleQuotedStringLiteral: '\'' (EscapeSequence | ~["'\\]) '\'';
-DoubleQuotedStringLiteral: '"' (EscapeSequence | ~["'\\]) '"';
-BacktickStringLiteral: '`' (EscapeSequence | ~["'\\]) '`';
-EscapeSequence: '\\' (["\\/bfnrt] | UnicodeEscapeSequence);
-UnicodeEscapeSequence: 'u' HexLiteral HexLiteral HexLiteral HexLiteral;
-// TODO: template strings
-
-// number literal could be hex, octal, binary, decimal
-NumberLiteral: DecimalLiteral | HexLiteral | OctalLiteral | BinaryLiteral;
-HexLiteral: '0' [xX] [0-9a-fA-F]+;
-OctalLiteral: '0' [oO] [0-9]+;
-BinaryLiteral: '0' [bB] [0-1]+;
-DecimalLiteral: [0-9]+ ('.' [0-9]+)?;
-
 // identifiers
-Identifier: [a-zA-Z_$] [a-zA-Z0-9_$]*;
+Identifier: ([a-zA-Z_$] [a-zA-Z0-9_$]* '?'?) | '=?' | '?=';

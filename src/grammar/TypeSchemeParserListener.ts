@@ -4,12 +4,17 @@
 import { ParseTreeListener } from "antlr4ts/tree/ParseTreeListener";
 
 import { T_AtomContext } from "./TypeSchemeParser";
-import { T_ListContext } from "./TypeSchemeParser";
-import { T_IndexedContext } from "./TypeSchemeParser";
+import { T_QuotedContext } from "./TypeSchemeParser";
+import { T_GroupedContext } from "./TypeSchemeParser";
 import { T_ArrayContext } from "./TypeSchemeParser";
+import { T_BarContext } from "./TypeSchemeParser";
+import { T_AmpContext } from "./TypeSchemeParser";
+import { T_IndexedContext } from "./TypeSchemeParser";
 import { T_CallContext } from "./TypeSchemeParser";
+import { T_ListContext } from "./TypeSchemeParser";
 import { T_SpreadContext } from "./TypeSchemeParser";
 import { CompilationUnitContext } from "./TypeSchemeParser";
+import { WsContext } from "./TypeSchemeParser";
 import { SexprContext } from "./TypeSchemeParser";
 import { AtomContext } from "./TypeSchemeParser";
 import { ListContext } from "./TypeSchemeParser";
@@ -41,30 +46,30 @@ export interface TypeSchemeParserListener extends ParseTreeListener {
 	exitT_Atom?: (ctx: T_AtomContext) => void;
 
 	/**
-	 * Enter a parse tree produced by the `T_List`
+	 * Enter a parse tree produced by the `T_Quoted`
 	 * labeled alternative in `TypeSchemeParser.sexpr`.
 	 * @param ctx the parse tree
 	 */
-	enterT_List?: (ctx: T_ListContext) => void;
+	enterT_Quoted?: (ctx: T_QuotedContext) => void;
 	/**
-	 * Exit a parse tree produced by the `T_List`
+	 * Exit a parse tree produced by the `T_Quoted`
 	 * labeled alternative in `TypeSchemeParser.sexpr`.
 	 * @param ctx the parse tree
 	 */
-	exitT_List?: (ctx: T_ListContext) => void;
+	exitT_Quoted?: (ctx: T_QuotedContext) => void;
 
 	/**
-	 * Enter a parse tree produced by the `T_Indexed`
+	 * Enter a parse tree produced by the `T_Grouped`
 	 * labeled alternative in `TypeSchemeParser.sexpr`.
 	 * @param ctx the parse tree
 	 */
-	enterT_Indexed?: (ctx: T_IndexedContext) => void;
+	enterT_Grouped?: (ctx: T_GroupedContext) => void;
 	/**
-	 * Exit a parse tree produced by the `T_Indexed`
+	 * Exit a parse tree produced by the `T_Grouped`
 	 * labeled alternative in `TypeSchemeParser.sexpr`.
 	 * @param ctx the parse tree
 	 */
-	exitT_Indexed?: (ctx: T_IndexedContext) => void;
+	exitT_Grouped?: (ctx: T_GroupedContext) => void;
 
 	/**
 	 * Enter a parse tree produced by the `T_Array`
@@ -80,6 +85,45 @@ export interface TypeSchemeParserListener extends ParseTreeListener {
 	exitT_Array?: (ctx: T_ArrayContext) => void;
 
 	/**
+	 * Enter a parse tree produced by the `T_Bar`
+	 * labeled alternative in `TypeSchemeParser.sexpr`.
+	 * @param ctx the parse tree
+	 */
+	enterT_Bar?: (ctx: T_BarContext) => void;
+	/**
+	 * Exit a parse tree produced by the `T_Bar`
+	 * labeled alternative in `TypeSchemeParser.sexpr`.
+	 * @param ctx the parse tree
+	 */
+	exitT_Bar?: (ctx: T_BarContext) => void;
+
+	/**
+	 * Enter a parse tree produced by the `T_Amp`
+	 * labeled alternative in `TypeSchemeParser.sexpr`.
+	 * @param ctx the parse tree
+	 */
+	enterT_Amp?: (ctx: T_AmpContext) => void;
+	/**
+	 * Exit a parse tree produced by the `T_Amp`
+	 * labeled alternative in `TypeSchemeParser.sexpr`.
+	 * @param ctx the parse tree
+	 */
+	exitT_Amp?: (ctx: T_AmpContext) => void;
+
+	/**
+	 * Enter a parse tree produced by the `T_Indexed`
+	 * labeled alternative in `TypeSchemeParser.sexpr`.
+	 * @param ctx the parse tree
+	 */
+	enterT_Indexed?: (ctx: T_IndexedContext) => void;
+	/**
+	 * Exit a parse tree produced by the `T_Indexed`
+	 * labeled alternative in `TypeSchemeParser.sexpr`.
+	 * @param ctx the parse tree
+	 */
+	exitT_Indexed?: (ctx: T_IndexedContext) => void;
+
+	/**
 	 * Enter a parse tree produced by the `T_Call`
 	 * labeled alternative in `TypeSchemeParser.sexpr`.
 	 * @param ctx the parse tree
@@ -91,6 +135,19 @@ export interface TypeSchemeParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitT_Call?: (ctx: T_CallContext) => void;
+
+	/**
+	 * Enter a parse tree produced by the `T_List`
+	 * labeled alternative in `TypeSchemeParser.sexpr`.
+	 * @param ctx the parse tree
+	 */
+	enterT_List?: (ctx: T_ListContext) => void;
+	/**
+	 * Exit a parse tree produced by the `T_List`
+	 * labeled alternative in `TypeSchemeParser.sexpr`.
+	 * @param ctx the parse tree
+	 */
+	exitT_List?: (ctx: T_ListContext) => void;
 
 	/**
 	 * Enter a parse tree produced by the `T_Spread`
@@ -115,6 +172,17 @@ export interface TypeSchemeParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitCompilationUnit?: (ctx: CompilationUnitContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `TypeSchemeParser.ws`.
+	 * @param ctx the parse tree
+	 */
+	enterWs?: (ctx: WsContext) => void;
+	/**
+	 * Exit a parse tree produced by `TypeSchemeParser.ws`.
+	 * @param ctx the parse tree
+	 */
+	exitWs?: (ctx: WsContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `TypeSchemeParser.sexpr`.

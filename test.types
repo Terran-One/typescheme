@@ -3,15 +3,31 @@
 )
 
 (define (Lens T P)
-  (if (extends? P (Prefix any any[]))
-  	(if (extends? (First P) (keyof T))
-  		(if (extends? (Shift P) (Prefix any any[]))
+  (if (=? P (Prefix any any[]))
+  	(if (=? (First P) (keyof T))
+  		(if (=? (Shift P) (Prefix any any[]))
   			(Lens T[First<P>] (Shift P))
   			T[(First P)]
-      )
+  		)
     )
   T)
 )
 
+(define (Matches A B)
+	(if (=? A B)
+		true
+		false
+	)
+)
+
+(define (MatchesHello A)
+	(Matches A "Hello")
+)
+
+(define isString (?= string))
+
+(define test ['a', 'b', 'c'])
+(define testA '(=? test string[]))
+(define test3 (eval testA))
+(define PrefixWithG (Prefix 'g'))
 (define Obj {a: number, b: string})
-(define A (Lens T ['a', 'b']))

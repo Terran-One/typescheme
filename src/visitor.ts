@@ -5,9 +5,13 @@ import {
 	LiteralContext,
 	ObjectLiteralContext,
 	ObjectPropContext,
+	T_QuotedContext,
 	PrimitiveContext, T_ArrayContext,
 	T_AtomContext, T_CallContext, T_IndexedContext, T_SpreadContext,
 	TupleLiteralContext,
+	T_GroupedContext,
+	T_AmpContext,
+	T_BarContext,
 } from "./grammar/TypeSchemeParser";
 import {TypeSchemeParserVisitor} from "./grammar/TypeSchemeParserVisitor";
 import {BooleanLiteral, Prop} from "./ast";
@@ -32,6 +36,24 @@ export class TypeSchemeASTVisitor extends AbstractParseTreeVisitor<any> implemen
 	visitList(ctx: any): AST.List<AST.Node> {
 		let items = ctx.sexpr().map((l: any) => this.visit(l));
 		return AST.List.of(items);
+	}
+
+	visitT_Grouped(ctx: T_GroupedContext): AST.SExpr {
+		return this.visit(ctx.sexpr());
+	}
+
+	visitT_Amp(ctx: T_AmpContext): any {
+		let items = ctx.sexpr().map((l: any) => this.visit(l));
+		return new AST.IntersectionOf(AST.List.of(items));
+	}
+
+	visitT_Bar(ctx: T_BarContext): AST.UnionOf {
+		let items = ctx.sexpr().map((l: any) => this.visit(l));
+		return new AST.UnionOf(AST.List.of(items));
+	}
+
+	visitT_Quoted(ctx: T_QuotedContext): AST.Quoted {
+		return new AST.Quoted(this.visit(ctx.sexpr()));
 	}
 
 	// TODO: pass through?
