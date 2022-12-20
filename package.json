@@ -33,6 +33,7 @@
 		"lodash": "^4.17.21",
 		"reflect-metadata": "^0.1.13",
 		"runtypes": "^6.6.0",
-		"ts-morph": "^17.0.1"
+		"ts-morph": "^17.0.1",
+		"xstate": "^4.35.1"
 	}
 }

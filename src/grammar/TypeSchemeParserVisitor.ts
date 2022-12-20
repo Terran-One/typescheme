@@ -4,8 +4,8 @@
 import { ParseTreeVisitor } from "antlr4ts/tree/ParseTreeVisitor";
 
 import { T_AtomContext } from "./TypeSchemeParser";
-import { T_QuotedContext } from "./TypeSchemeParser";
 import { T_GroupedContext } from "./TypeSchemeParser";
+import { T_QuotedContext } from "./TypeSchemeParser";
 import { T_ArrayContext } from "./TypeSchemeParser";
 import { T_BarContext } from "./TypeSchemeParser";
 import { T_AmpContext } from "./TypeSchemeParser";
@@ -14,7 +14,6 @@ import { T_CallContext } from "./TypeSchemeParser";
 import { T_ListContext } from "./TypeSchemeParser";
 import { T_SpreadContext } from "./TypeSchemeParser";
 import { CompilationUnitContext } from "./TypeSchemeParser";
-import { WsContext } from "./TypeSchemeParser";
 import { SexprContext } from "./TypeSchemeParser";
 import { AtomContext } from "./TypeSchemeParser";
 import { ListContext } from "./TypeSchemeParser";
@@ -44,20 +43,20 @@ export interface TypeSchemeParserVisitor<Result> extends ParseTreeVisitor<Result
 	visitT_Atom?: (ctx: T_AtomContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by the `T_Quoted`
-	 * labeled alternative in `TypeSchemeParser.sexpr`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitT_Quoted?: (ctx: T_QuotedContext) => Result;
-
-	/**
 	 * Visit a parse tree produced by the `T_Grouped`
 	 * labeled alternative in `TypeSchemeParser.sexpr`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	visitT_Grouped?: (ctx: T_GroupedContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by the `T_Quoted`
+	 * labeled alternative in `TypeSchemeParser.sexpr`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitT_Quoted?: (ctx: T_QuotedContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by the `T_Array`
@@ -121,13 +120,6 @@ export interface TypeSchemeParserVisitor<Result> extends ParseTreeVisitor<Result
 	 * @return the visitor result
 	 */
 	visitCompilationUnit?: (ctx: CompilationUnitContext) => Result;
-
-	/**
-	 * Visit a parse tree produced by `TypeSchemeParser.ws`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitWs?: (ctx: WsContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `TypeSchemeParser.sexpr`.

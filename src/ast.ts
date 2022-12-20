@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import {NFA} from "./fsm";
 
 
 export class Node {
@@ -546,6 +547,89 @@ export class Quoted extends Node {
 	}
 }
 
+export type PatternExpr = OneOf | AnyOf;
+
+export class OneOf {
+	constructor(public item: Node) {
+	}
+
+	toString(): string {
+		return this.item.toString();
+	}
+}
+
+export class AnyOf {
+	constructor(public item: Node) {
+	}
+
+	toString(): string {
+		return `${this.item.toString()}*`;
+	}
+}
+
+interface TuplePatternPayload {
+	nextExpr: PatternExpr
+}
+
+export class TuplePattern {
+
+	public nfa: NFA<TuplePatternPayload>;
+
+	constructor(public exprs: PatternExpr[]) {
+		this.nfa = new NFA<TuplePatternPayload>();
+		this.nfa.setTransitionFn((transition, input, currentStates) => {
+			for (let i = 0; i < currentStates.length; i++) {
+				let state = currentStates[i];
+				let {payload} = state;
+				if (payload && input.isSubtypeOf(payload.nextExpr.item)) {
+					transition(payload.nextExpr.item);
+				}
+			}
+		});
+
+		let prevState = this.nfa.addState("<start>");
+
+		for (let i = 0; i < this.exprs.length; i++) {
+			let expr = exprs[i];
+			let state = this.nfa.addState(`${this.nfa.states[i].name} -> ${expr.toString()}`);
+			prevState.payload = {nextExpr: expr};
+			if (expr instanceof OneOf) {
+				prevState.addTransition(expr.item, state.id);
+			}
+
+			if (expr instanceof AnyOf) {
+				prevState.addTransition(expr.item, state.id);
+				prevState.addTransition(null, state.id);
+				state.addTransition(expr.item, state.id); // self loop
+			}
+			prevState = state;
+		}
+		this.nfa.states[this.nfa.states.length - 1].accepting = true;
+	}
+
+	static fromTuple(ty: TupleLiteral): TuplePattern {
+		return new TuplePattern(ty.items.map(item => {
+			if (item instanceof Spread && item.ty instanceof ArrayOf) {
+				return new AnyOf(item.ty.ty);
+			} else {
+				return new OneOf(item);
+			}
+		}));
+	}
+
+	matches(tup: TupleLiteral): boolean {
+		this.nfa.start();
+		for (let item of tup.items) {
+			this.nfa.consume(item);
+		}
+		return this.nfa.isAccepting();
+	}
+
+	toString(): string {
+		return `Pattern(${this.exprs.map(e => e.toString()).join(', ')})`;
+	}
+}
+
 export class TupleLiteral extends Node {
 	constructor(public items: List<Node> = List.empty()) {
 		super();
@@ -584,9 +668,8 @@ export class TupleLiteral extends Node {
 		// note: both TupleLiterals are assumed to be in canonical form, which
 		// can be done by evaluating both sides of the subtype relation.
 		if (other instanceof TupleLiteral) {
-			// let pattern = new DFA(other);
-			// return pattern.matches(this);
-			return true;
+			let pattern = TuplePattern.fromTuple(other);
+			return pattern.matches(this);
 		} else if (other instanceof ArrayOf) {
 			for (const item of this.items) {
 				console.log({item, other});
