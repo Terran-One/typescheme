@@ -81,6 +81,15 @@ export class Node {
 	}
 
 	/**
+	 * Checks if this node is a subtype of the given type or
+	 * if this node is a supertype of the given type.
+	 * @param other
+	 */
+	isCompatible(other: Node): boolean {
+		return this.isSubtypeOf(other) || other.isSubtypeOf(this);
+	}
+
+	/**
 	 * Checks if this node is subtype of (extends) the given type.
 	 * @param {Node} node to compare
 	 */
@@ -96,7 +105,6 @@ export class Node {
 				return false;
 			}
 			let res = other.types.some(t => this.isSubtypeOf(t));
-			console.log(`Checking if ${this.toString()} is subtype of ${other.toString()} -- ${res}`);
 			return res;
 		} else if (other instanceof IntersectionOf) {
 			if (other.types.length === 0) {
@@ -116,7 +124,7 @@ export class Node {
 	}
 
 	toString(): string {
-		return "node";
+		return "<Node>";
 	}
 
 	intersect(other: Node): Node {
@@ -126,10 +134,10 @@ export class Node {
 			return this;
 		} else if (other.equals(Primitive.Never())) {
 			return other;
-		} else if (other instanceof IntersectionOf) {
-			return new IntersectionOf(List.of([...other.types, this]))
+		} else if (other instanceof IntersectionOf || other instanceof UnionOf) {
+			return other.intersect(this);
 		} else {
-			return new IntersectionOf(List.of([other, this]));
+			return new IntersectionOf(List.of([this, other]));
 		}
 	}
 
@@ -140,8 +148,8 @@ export class Node {
 			return other;
 		} else if (other.equals(Primitive.Never())) {
 			return this;
-		} else if (other instanceof UnionOf) {
-			return new UnionOf(List.of([...other.types, this]))
+		} else if (other instanceof UnionOf || other instanceof IntersectionOf) {
+			return other.union(this);
 		} else {
 			return new UnionOf(List.of([other, this]));
 		}
@@ -309,7 +317,7 @@ export class ArrayOf extends Node {
 }
 
 export class UnionOf extends Node {
-	constructor(public types: List<Node>) {
+	constructor(public types: List<Node> = List.empty()) {
 		super();
 		this.setParentForChildren();
 	}
@@ -319,21 +327,55 @@ export class UnionOf extends Node {
 	}
 
 	intersect(other: Node): Node {
+		// (A | B) & (C | D) = (A & C) | (A & D) | (B & C) | (B & D)
 		if (other instanceof UnionOf) {
-			let A = this.types.items.filter(t => t.isSubtypeOf(other));
-			let B = other.types.items.filter(t => t.isSubtypeOf(this));
-			return new UnionOf(List.of(A.concat(B)));
+			let intersections: Node[] = [];
+			for (let a of this.types) {
+				for (let b of other.types) {
+					let i = a.intersect(b);
+					if (!i.equals(Primitive.Never())) {
+						intersections.push(i);
+					}
+				}
+			}
+			return new UnionOf(List.of(intersections));
 		} else if (other instanceof IntersectionOf) {
-			let A = other.types.items.filter(t => t.isSubtypeOf(this));
-			return new IntersectionOf(List.of(A));
+			// (A | B) & (C & D) = (A & C & D) | (B & C & D)
+			let intersections: Node[] = [];
+			for (let a of this.types) {
+				let i = a.intersect(other);
+				if (!i.equals(Primitive.Never())) {
+					intersections.push(i);
+				}
+			}
+			return new UnionOf(List.of(intersections));
 		} else {
 			return super.intersect(other);
+		}
+	}
+
+	union(other: Node): Node {
+		if (other instanceof UnionOf) {
+			// (A | B) | (C | D) = (A | B | C | D)
+			return new UnionOf(List.of(this.types.items.concat(other.types.items)));
+		} else if (other instanceof IntersectionOf) {
+			// (A | B) | (C & D) = (A | C & D) | (B | C & D)
+			let unions: Node[] = [];
+			for (let a of this.types) {
+				let u = a.union(other);
+				if (!u.equals(Primitive.Never())) {
+					unions.push(u);
+				}
+			}
+			return new UnionOf(List.of(unions));
+		} else {
+			return super.union(other);
 		}
 	}
 }
 
 export class IntersectionOf extends Node {
-	constructor(public types: List<Node>) {
+	constructor(public types: List<Node> = List.empty()) {
 		super();
 		this.setParentForChildren();
 	}
@@ -343,15 +385,40 @@ export class IntersectionOf extends Node {
 	}
 
 	intersect(other: Node): Node {
+		// (A & B) & (C & D) = (A & B & C & D)
 		if (other instanceof IntersectionOf) {
-			let A = this.types.items.filter(t => t.isSubtypeOf(other));
-			let B = other.types.items.filter(t => t.isSubtypeOf(this));
-			return new IntersectionOf(List.of(A.concat(B)));
+			return new IntersectionOf(List.of(this.types.items.concat(other.types.items)));
 		} else if (other instanceof UnionOf) {
-			let A = other.types.items.filter(t => t.isSubtypeOf(this));
-			return new UnionOf(List.of(A));
+			// (A & B) & (C | D) = (A & C | A & D) & (B & C | B & D)
+			let intersections: Node[] = [];
+			for (let a of this.types) {
+				let i = a.intersect(other);
+				if (!i.equals(Primitive.Never())) {
+					intersections.push(i);
+				}
+			}
+			return new IntersectionOf(List.of(intersections));
 		} else {
-			return this.types.items.reduce((acc, t) => acc.intersect(t), this.types.items[0]);
+			return super.intersect(other);
+		}
+	}
+
+	union(other: Node): Node {
+		if (other instanceof IntersectionOf) {
+			// (A & B) | (C & D) = (A | C | D) & (B | C | D)
+			return new IntersectionOf(List.of(this.types.items.concat(other.types.items)));
+		} else if (other instanceof UnionOf) {
+			// (A & B) | (C | D) = (A | C | D) & (B | C | D)
+			let unions: Node[] = [];
+			for (let a of this.types) {
+				let u = a.union(other);
+				if (!u.equals(Primitive.Never())) {
+					unions.push(u);
+				}
+			}
+			return new IntersectionOf(List.of(unions));
+		} else {
+			return super.union(other);
 		}
 	}
 }
@@ -556,6 +623,10 @@ export class OneOf {
 	toString(): string {
 		return this.item.toString();
 	}
+
+	matches(other: Node): boolean {
+		return other.isSubtypeOf(this.item);
+	}
 }
 
 export class AnyOf {
@@ -564,6 +635,14 @@ export class AnyOf {
 
 	toString(): string {
 		return `${this.item.toString()}*`;
+	}
+
+	matches(other: Node): boolean {
+		if (other instanceof Spread) {
+			return (other.ty as ArrayOf).ty.isSubtypeOf(this.item);
+		} else {
+			return other.isSubtypeOf(this.item);
+		}
 	}
 }
 
@@ -581,8 +660,10 @@ export class TuplePattern {
 			for (let i = 0; i < currentStates.length; i++) {
 				let state = currentStates[i];
 				let {payload} = state;
-				if (payload && input.isSubtypeOf(payload.nextExpr.item)) {
-					transition(payload.nextExpr.item);
+				if (payload) {
+					if (payload.nextExpr.matches(input)) {
+						transition(payload.nextExpr.item);
+					}
 				}
 			}
 		});
@@ -672,7 +753,6 @@ export class TupleLiteral extends Node {
 			return pattern.matches(this);
 		} else if (other instanceof ArrayOf) {
 			for (const item of this.items) {
-				console.log({item, other});
 				if (item instanceof Spread) {
 					if (!item.isSubtypeOf(other)) {
 						return false;

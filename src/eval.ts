@@ -1,6 +1,6 @@
 import {readFileSync} from 'fs';
-import {Parser} from "./src/parser";
-import * as AST from './src/ast';
+import {Parser} from "./parser";
+import * as AST from './ast';
 import _ from 'lodash';
 
 const file = readFileSync('./test.types');
@@ -92,6 +92,14 @@ const builtins: any = {
 			}
 		}
 		return AST.Primitive.Never();
+	},
+
+	'intersect': (env: any, ...types: AST.Node[]): AST.Node => {
+		return cg(env, new AST.IntersectionOf(AST.List.of(types.map(t => cg(env, t)))));
+	},
+
+	'union': (env: any, ...types: AST.Node[]): AST.Node => {
+		return cg(env, new AST.UnionOf(AST.List.of(types.map(t => cg(env, t)))));
 	}
 };
 
@@ -99,7 +107,7 @@ const builtins: any = {
 builtins['=?'] = builtins['extends?'];
 builtins['?='] = builtins['contains?'];
 
-function cg(env: any, ast: AST.Node): any {
+export function cg(env: any, ast: AST.Node): any {
 	if (ast instanceof AST.Identifier) {
 		let {text} = ast;
 		if (text in builtins) {
@@ -177,7 +185,7 @@ function cg(env: any, ast: AST.Node): any {
 				return AST.Primitive.Never();
 			} else if (x instanceof AST.IntersectionOf) {
 				for (let t of x.types) {
-					if (!t.isSubtypeOf(currentIntersection)) {
+					if (!t.isSubtypeOf(currentIntersection) && !currentIntersection.isSubtypeOf(t)) {
 						return AST.Primitive.Never();
 					} else {
 						// t extends currentIntersection, but we want to check if more specific
@@ -187,12 +195,14 @@ function cg(env: any, ast: AST.Node): any {
 						// otherwise, currentIntersection is already the most specific type
 					}
 				}
+			} else if (x instanceof AST.UnionOf) {
+				return x.intersect(currentIntersection);
 			} else {
-				if (!x.isSubtypeOf(currentIntersection)) {
+				if (!x.isCompatible(currentIntersection)) {
 					return AST.Primitive.Never();
 				} else {
 					// x extends currentIntersection, but we want to check if more specific
-					if (!currentIntersection.isSubtypeOf(x)) {
+					if (x.isSubtypeOf(currentIntersection)) {
 						currentIntersection = x;
 					}
 					// otherwise, currentIntersection is already the most specific type
@@ -204,8 +214,3 @@ function cg(env: any, ast: AST.Node): any {
 		return ast;
 	}
 }
-
-let env: any = {};
-let {Lens} = cg(env, tree);
-console.log(env);
-console.log(env['test3'].toString());

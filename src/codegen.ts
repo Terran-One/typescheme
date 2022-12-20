@@ -14,7 +14,6 @@ export class Codegen {
 
 		// get all the rule names
 		grammarAST.rules.forEach(rule => {
-			console.log(rule.name);
 			// analyze the rule
 			let {alts} = rule.rule;
 			// for each alternative, extract the labeled elements

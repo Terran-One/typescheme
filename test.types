@@ -28,6 +28,9 @@
 
 (define test ['a', 'b', 'c'])
 (define testA '(=? test string[]))
-(define test3 (=? [true, boolean, ...number[], 1, 2, 3, ...string[]] [...boolean[], ...number[], 1, 2, 3, ...string[]]))
+(define x ('a' | 'b' | 'c'))
+(define z ('b' | 'c'))
+(define test3 (x & z))
+
 (define PrefixWithG (Prefix 'g'))
 (define Obj {a: number, b: string})
