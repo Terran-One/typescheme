@@ -101,16 +101,19 @@ export class Node {
 		} else if (other.equals(Primitive.Never())) {
 			return false; // precedence -- 'never' will still extend 'never'
 		} else if (other instanceof UnionOf) {
-			if (other.types.length === 0) {
-				return false;
+			for (let ty of other.types) {
+				if (this.isSubtypeOf(ty)) {
+					return true;
+				}
 			}
-			let res = other.types.some(t => this.isSubtypeOf(t));
-			return res;
+			return false;
 		} else if (other instanceof IntersectionOf) {
-			if (other.types.length === 0) {
-				return true;
+			for (let ty of other.types) {
+				if (!this.isSubtypeOf(ty)) {
+					return false;
+				}
 			}
-			return other.types.every(t => this.isSubtypeOf(t));
+			return true;
 		} else {
 			return false;
 		}
@@ -326,6 +329,14 @@ export class UnionOf extends Node {
 		return `(${this.types.map(t => t.toString()).join(' | ')})`;
 	}
 
+	isSubtypeOf(other: Node): boolean {
+		if (other instanceof UnionOf) {
+			return this.types.every(t => t.isSubtypeOf(other));
+		} else {
+			return super.isSubtypeOf(other);
+		}
+	}
+
 	intersect(other: Node): Node {
 		// (A | B) & (C | D) = (A & C) | (A & D) | (B & C) | (B & D)
 		if (other instanceof UnionOf) {
@@ -419,6 +430,14 @@ export class IntersectionOf extends Node {
 			return new IntersectionOf(List.of(unions));
 		} else {
 			return super.union(other);
+		}
+	}
+
+	isSubtypeOf(other: Node): boolean {
+		if (other instanceof IntersectionOf) {
+			return this.types.every(t => t.isCompatible(other));
+		} else {
+			return super.isSubtypeOf(other);
 		}
 	}
 }
