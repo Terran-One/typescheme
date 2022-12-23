@@ -44,6 +44,7 @@ OctalLiteral=43
 BinaryLiteral=44
 DecimalLiteral=45
 Identifier=46
+QUESTION=47
 '('=1
 ')'=2
 '{'=3

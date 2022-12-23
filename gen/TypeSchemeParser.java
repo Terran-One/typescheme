@@ -23,7 +23,7 @@ public class TypeSchemeParser extends Parser {
 		NUMBER=32, BOOLEAN=33, BooleanLiteral=34, StringLiteral=35, SingleQuotedStringLiteral=36, 
 		DoubleQuotedStringLiteral=37, BacktickStringLiteral=38, EscapeSequence=39, 
 		UnicodeEscapeSequence=40, NumberLiteral=41, HexLiteral=42, OctalLiteral=43, 
-		BinaryLiteral=44, DecimalLiteral=45, Identifier=46;
+		BinaryLiteral=44, DecimalLiteral=45, Identifier=46, QUESTION=47;
 	public static final int
 		RULE_compilationUnit = 0, RULE_sexpr = 1, RULE_atom = 2, RULE_list = 3, 
 		RULE_primitive = 4, RULE_literal = 5, RULE_tupleLiteral = 6, RULE_objectLiteral = 7, 
@@ -55,7 +55,7 @@ public class TypeSchemeParser extends Parser {
 			"BOOLEAN", "BooleanLiteral", "StringLiteral", "SingleQuotedStringLiteral", 
 			"DoubleQuotedStringLiteral", "BacktickStringLiteral", "EscapeSequence", 
 			"UnicodeEscapeSequence", "NumberLiteral", "HexLiteral", "OctalLiteral", 
-			"BinaryLiteral", "DecimalLiteral", "Identifier"
+			"BinaryLiteral", "DecimalLiteral", "Identifier", "QUESTION"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -1396,6 +1396,7 @@ public class TypeSchemeParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class ObjectPropContext extends ParserRuleContext {
 		public IdentifierContext key;
+		public Token opt;
 		public SexprContext value;
 		public TerminalNode COLON() { return getToken(TypeSchemeParser.COLON, 0); }
 		public IdentifierContext identifier() {
@@ -1408,6 +1409,7 @@ public class TypeSchemeParser extends Parser {
 		public SexprContext sexpr() {
 			return getRuleContext(SexprContext.class,0);
 		}
+		public TerminalNode QUESTION() { return getToken(TypeSchemeParser.QUESTION, 0); }
 		public ObjectPropContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1452,24 +1454,48 @@ public class TypeSchemeParser extends Parser {
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(237);
+			setState(244);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			if (_la==QUESTION) {
+				{
+				setState(237);
+				((ObjectPropContext)_localctx).opt = match(QUESTION);
+				setState(241);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				while (_la==WS) {
+					{
+					{
+					setState(238);
+					match(WS);
+					}
+					}
+					setState(243);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				}
+				}
+			}
+
+			setState(246);
 			match(COLON);
-			setState(241);
+			setState(250);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==WS) {
 				{
 				{
-				setState(238);
+				setState(247);
 				match(WS);
 				}
 				}
-				setState(243);
+				setState(252);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
 			{
-			setState(244);
+			setState(253);
 			((ObjectPropContext)_localctx).value = sexpr(0);
 			}
 			}
@@ -1514,13 +1540,13 @@ public class TypeSchemeParser extends Parser {
 		IdentifierContext _localctx = new IdentifierContext(_ctx, getState());
 		enterRule(_localctx, 18, RULE_identifier);
 		try {
-			setState(248);
+			setState(257);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case Identifier:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(246);
+				setState(255);
 				match(Identifier);
 				}
 				break;
@@ -1534,7 +1560,7 @@ public class TypeSchemeParser extends Parser {
 			case IF:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(247);
+				setState(256);
 				reservedKeyword();
 				}
 				break;
@@ -1589,7 +1615,7 @@ public class TypeSchemeParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(250);
+			setState(259);
 			_la = _input.LA(1);
 			if ( !(((_la) & ~0x3f) == 0 && ((1L << _la) & 33423360L) != 0) ) {
 			_errHandler.recoverInline(this);
@@ -1636,7 +1662,7 @@ public class TypeSchemeParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001.\u00fd\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001/\u0106\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
 		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0002"+
 		"\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0001\u0000\u0003\u0000\u0018"+
@@ -1673,15 +1699,16 @@ public class TypeSchemeParser extends Parser {
 		"\b\u0007\n\u0007\f\u0007\u00db\t\u0007\u0003\u0007\u00dd\b\u0007\u0001"+
 		"\u0007\u0005\u0007\u00e0\b\u0007\n\u0007\f\u0007\u00e3\t\u0007\u0001\u0007"+
 		"\u0001\u0007\u0001\b\u0001\b\u0005\b\u00e9\b\b\n\b\f\b\u00ec\t\b\u0001"+
-		"\b\u0001\b\u0005\b\u00f0\b\b\n\b\f\b\u00f3\t\b\u0001\b\u0001\b\u0001\t"+
-		"\u0001\t\u0003\t\u00f9\b\t\u0001\n\u0001\n\u0001\n\u0000\u0001\u0002\u000b"+
+		"\b\u0001\b\u0005\b\u00f0\b\b\n\b\f\b\u00f3\t\b\u0003\b\u00f5\b\b\u0001"+
+		"\b\u0001\b\u0005\b\u00f9\b\b\n\b\f\b\u00fc\t\b\u0001\b\u0001\b\u0001\t"+
+		"\u0001\t\u0003\t\u0102\b\t\u0001\n\u0001\n\u0001\n\u0000\u0001\u0002\u000b"+
 		"\u0000\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014\u0000\u0002\u0001"+
-		"\u0000\u0019!\u0001\u0000\u0011\u0018\u011d\u0000\u0017\u0001\u0000\u0000"+
+		"\u0000\u0019!\u0001\u0000\u0011\u0018\u0128\u0000\u0017\u0001\u0000\u0000"+
 		"\u0000\u0002;\u0001\u0000\u0000\u0000\u0004w\u0001\u0000\u0000\u0000\u0006"+
 		"y\u0001\u0000\u0000\u0000\b\u0093\u0001\u0000\u0000\u0000\n\u009a\u0001"+
 		"\u0000\u0000\u0000\f\u009c\u0001\u0000\u0000\u0000\u000e\u00c1\u0001\u0000"+
-		"\u0000\u0000\u0010\u00e6\u0001\u0000\u0000\u0000\u0012\u00f8\u0001\u0000"+
-		"\u0000\u0000\u0014\u00fa\u0001\u0000\u0000\u0000\u0016\u0018\u0005\u0010"+
+		"\u0000\u0000\u0010\u00e6\u0001\u0000\u0000\u0000\u0012\u0101\u0001\u0000"+
+		"\u0000\u0000\u0014\u0103\u0001\u0000\u0000\u0000\u0016\u0018\u0005\u0010"+
 		"\u0000\u0000\u0017\u0016\u0001\u0000\u0000\u0000\u0017\u0018\u0001\u0000"+
 		"\u0000\u0000\u0018\u001f\u0001\u0000\u0000\u0000\u0019\u001b\u0003\u0002"+
 		"\u0001\u0000\u001a\u001c\u0005\u0010\u0000\u0000\u001b\u001a\u0001\u0000"+
@@ -1792,18 +1819,23 @@ public class TypeSchemeParser extends Parser {
 		"\u0000\u0000\u0000\u00e6\u00ea\u0003\u0012\t\u0000\u00e7\u00e9\u0005\u0010"+
 		"\u0000\u0000\u00e8\u00e7\u0001\u0000\u0000\u0000\u00e9\u00ec\u0001\u0000"+
 		"\u0000\u0000\u00ea\u00e8\u0001\u0000\u0000\u0000\u00ea\u00eb\u0001\u0000"+
-		"\u0000\u0000\u00eb\u00ed\u0001\u0000\u0000\u0000\u00ec\u00ea\u0001\u0000"+
-		"\u0000\u0000\u00ed\u00f1\u0005\t\u0000\u0000\u00ee\u00f0\u0005\u0010\u0000"+
+		"\u0000\u0000\u00eb\u00f4\u0001\u0000\u0000\u0000\u00ec\u00ea\u0001\u0000"+
+		"\u0000\u0000\u00ed\u00f1\u0005/\u0000\u0000\u00ee\u00f0\u0005\u0010\u0000"+
 		"\u0000\u00ef\u00ee\u0001\u0000\u0000\u0000\u00f0\u00f3\u0001\u0000\u0000"+
 		"\u0000\u00f1\u00ef\u0001\u0000\u0000\u0000\u00f1\u00f2\u0001\u0000\u0000"+
-		"\u0000\u00f2\u00f4\u0001\u0000\u0000\u0000\u00f3\u00f1\u0001\u0000\u0000"+
-		"\u0000\u00f4\u00f5\u0003\u0002\u0001\u0000\u00f5\u0011\u0001\u0000\u0000"+
-		"\u0000\u00f6\u00f9\u0005.\u0000\u0000\u00f7\u00f9\u0003\u0014\n\u0000"+
-		"\u00f8\u00f6\u0001\u0000\u0000\u0000\u00f8\u00f7\u0001\u0000\u0000\u0000"+
-		"\u00f9\u0013\u0001\u0000\u0000\u0000\u00fa\u00fb\u0007\u0001\u0000\u0000"+
-		"\u00fb\u0015\u0001\u0000\u0000\u0000\"\u0017\u001b\u001f*1;AHPWjoqw}\u0084"+
-		"\u0089\u008e\u009a\u00a0\u00a7\u00ae\u00b4\u00b7\u00bc\u00c5\u00cc\u00d3"+
-		"\u00d9\u00dc\u00e1\u00ea\u00f1\u00f8";
+		"\u0000\u00f2\u00f5\u0001\u0000\u0000\u0000\u00f3\u00f1\u0001\u0000\u0000"+
+		"\u0000\u00f4\u00ed\u0001\u0000\u0000\u0000\u00f4\u00f5\u0001\u0000\u0000"+
+		"\u0000\u00f5\u00f6\u0001\u0000\u0000\u0000\u00f6\u00fa\u0005\t\u0000\u0000"+
+		"\u00f7\u00f9\u0005\u0010\u0000\u0000\u00f8\u00f7\u0001\u0000\u0000\u0000"+
+		"\u00f9\u00fc\u0001\u0000\u0000\u0000\u00fa\u00f8\u0001\u0000\u0000\u0000"+
+		"\u00fa\u00fb\u0001\u0000\u0000\u0000\u00fb\u00fd\u0001\u0000\u0000\u0000"+
+		"\u00fc\u00fa\u0001\u0000\u0000\u0000\u00fd\u00fe\u0003\u0002\u0001\u0000"+
+		"\u00fe\u0011\u0001\u0000\u0000\u0000\u00ff\u0102\u0005.\u0000\u0000\u0100"+
+		"\u0102\u0003\u0014\n\u0000\u0101\u00ff\u0001\u0000\u0000\u0000\u0101\u0100"+
+		"\u0001\u0000\u0000\u0000\u0102\u0013\u0001\u0000\u0000\u0000\u0103\u0104"+
+		"\u0007\u0001\u0000\u0000\u0104\u0015\u0001\u0000\u0000\u0000$\u0017\u001b"+
+		"\u001f*1;AHPWjoqw}\u0084\u0089\u008e\u009a\u00a0\u00a7\u00ae\u00b4\u00b7"+
+		"\u00bc\u00c5\u00cc\u00d3\u00d9\u00dc\u00e1\u00ea\u00f1\u00f4\u00fa\u0101";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

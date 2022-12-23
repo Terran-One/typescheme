@@ -96,10 +96,14 @@ export class Node {
 	isSubtypeOf(other: Node): boolean {
 		if (this.equals(other)) {
 			return true;
-		} else if (other.equals(Primitive.Any())) {
+		} else if (other.equals(Primitive.Unknown())) {
 			return true;
-		} else if (other.equals(Primitive.Never())) {
-			return false; // precedence -- 'never' will still extend 'never'
+		} else if (other.equals(Primitive.Undefined())) {
+			return this.equals(Primitive.Undefined()) || this.equals(Primitive.Any()) || this.equals(Primitive.Never());
+		} else if (this.equals(Primitive.Any()) || other.equals(Primitive.Any())) {
+			return true;
+		} else if (this.equals(Primitive.Never()) || other.equals(Primitive.Never())) {
+			return false;
 		} else if (other instanceof UnionOf) {
 			for (let ty of other.types) {
 				if (this.isSubtypeOf(ty)) {
@@ -259,6 +263,10 @@ export class List<T extends Node> extends Node implements Iterable<T> {
 
 	slice(start?: number, end?: number): T[] {
 		return this.items.slice(start, end);
+	}
+
+	find(predicate: (item: T) => boolean): T | undefined {
+		return this.items.find(predicate);
 	}
 
 	toString(): string {
@@ -584,7 +592,22 @@ export class ObjectLiteral extends Node {
 
 	isSubtypeOf(other: Node): boolean {
 		if (other instanceof ObjectLiteral) {
-			return this.props.every(p => other.props.some(p2 => p2.isSubtypeOf(p)));
+			return other.props.every(o => {
+				// find the corresponding property in this object
+				let prop = this.props.find(p => p.key === o.key);
+				if (prop) {
+					// check optionals
+					if (prop.optional && !o.optional) {
+						return false; // this key can be missing, but other can't
+					} else if (!prop.optional && o.optional) {
+						return prop.value.isSubtypeOf(o.value.union(Primitive.Undefined()));
+					} else { // both are optional, or both are not optional
+						return prop.value.isSubtypeOf(o.value);
+					}
+				} else { // couldn't find key -- must be optional
+					return o.optional;
+				}
+			});
 		} else {
 			return super.isSubtypeOf(other);
 		}
@@ -592,13 +615,13 @@ export class ObjectLiteral extends Node {
 }
 
 export class Prop extends Node {
-	constructor(public key: Identifier, public value: Node) {
+	constructor(public key: string, public value: Node, public optional: boolean = false) {
 		super();
 		this.setParentForChildren();
 	}
 
 	toString(): string {
-		return `${this.key.toString()}: ${this.value.toString()}`;
+		return `${this.key.toString()}${this.optional ? '?' : ''}: ${this.value.toString()}`;
 	}
 
 	intersect(other: Node): Node {
@@ -611,7 +634,7 @@ export class Prop extends Node {
 
 	isSubtypeOf(other: Node): boolean {
 		if (other instanceof Prop) {
-			return this.key.text === other.key.text && this.value.isSubtypeOf(other.value);
+			return this.key === other.key && this.value.isSubtypeOf(other.value);
 		} else {
 			return super.isSubtypeOf(other);
 		}

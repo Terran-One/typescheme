@@ -28,7 +28,7 @@ primitive: NUMBER | STRING | BOOLEAN | NEVER | NULL | UNDEFINED | UNKNOWN | OBJE
 literal: BooleanLiteral | StringLiteral | NumberLiteral | tupleLiteral | objectLiteral;
 tupleLiteral: LBRACK WS* ((items += sexpr) WS* (COMMA WS* items += sexpr)*)? WS* RBRACK;
 objectLiteral: LBRACE WS* ((props += objectProp) WS* (COMMA WS* props += objectProp)*)? WS* RBRACE;
-objectProp: (key=identifier) WS* COLON WS* (value=sexpr);
+objectProp: (key=identifier) WS* (opt=QUESTION WS*)? COLON WS* (value=sexpr);
 
 identifier: Identifier | reservedKeyword;
 reservedKeyword: KEYOF | INFER | IN | AS | EXTENDS | EXTENDS_Q | IN_Q | IF;

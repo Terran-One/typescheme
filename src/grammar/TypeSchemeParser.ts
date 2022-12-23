@@ -51,29 +51,30 @@ export class TypeSchemeParser extends Parser {
 	public static readonly COLON = 21;
 	public static readonly COMMA = 22;
 	public static readonly AMP = 23;
-	public static readonly BAR = 24;
-	public static readonly SPREAD = 25;
-	public static readonly DOT = 26;
-	public static readonly QUOTE = 27;
-	public static readonly WS = 28;
-	public static readonly KEYOF = 29;
-	public static readonly INFER = 30;
-	public static readonly IN = 31;
-	public static readonly AS = 32;
-	public static readonly EXTENDS = 33;
-	public static readonly EXTENDS_Q = 34;
-	public static readonly IN_Q = 35;
-	public static readonly IF = 36;
-	public static readonly NEVER = 37;
-	public static readonly NULL = 38;
-	public static readonly UNDEFINED = 39;
-	public static readonly UNKNOWN = 40;
-	public static readonly OBJECT = 41;
-	public static readonly ANY = 42;
-	public static readonly STRING = 43;
-	public static readonly NUMBER = 44;
-	public static readonly BOOLEAN = 45;
-	public static readonly Identifier = 46;
+	public static readonly QUESTION = 24;
+	public static readonly BAR = 25;
+	public static readonly SPREAD = 26;
+	public static readonly DOT = 27;
+	public static readonly QUOTE = 28;
+	public static readonly WS = 29;
+	public static readonly KEYOF = 30;
+	public static readonly INFER = 31;
+	public static readonly IN = 32;
+	public static readonly AS = 33;
+	public static readonly EXTENDS = 34;
+	public static readonly EXTENDS_Q = 35;
+	public static readonly IN_Q = 36;
+	public static readonly IF = 37;
+	public static readonly NEVER = 38;
+	public static readonly NULL = 39;
+	public static readonly UNDEFINED = 40;
+	public static readonly UNKNOWN = 41;
+	public static readonly OBJECT = 42;
+	public static readonly ANY = 43;
+	public static readonly STRING = 44;
+	public static readonly NUMBER = 45;
+	public static readonly BOOLEAN = 46;
+	public static readonly Identifier = 47;
 	public static readonly RULE_compilationUnit = 0;
 	public static readonly RULE_sexpr = 1;
 	public static readonly RULE_atom = 2;
@@ -95,18 +96,18 @@ export class TypeSchemeParser extends Parser {
 		undefined, undefined, undefined, undefined, undefined, undefined, undefined, 
 		undefined, undefined, undefined, undefined, undefined, undefined, "'('", 
 		"')'", "'{'", "'}'", "'['", "']'", "'<'", "'>'", "':'", "','", "'&'", 
-		"'|'", "'...'", "'.'", "'''", undefined, "'keyof'", "'infer'", "'in'", 
-		"'as'", "'extends'", "'extends?'", "'in?'", "'if'", "'never'", "'null'", 
-		"'undefined'", "'unknown'", "'object'", "'any'", "'string'", "'number'", 
-		"'boolean'",
+		"'?'", "'|'", "'...'", "'.'", "'''", undefined, "'keyof'", "'infer'", 
+		"'in'", "'as'", "'extends'", "'extends?'", "'in?'", "'if'", "'never'", 
+		"'null'", "'undefined'", "'unknown'", "'object'", "'any'", "'string'", 
+		"'number'", "'boolean'",
 	];
 	private static readonly _SYMBOLIC_NAMES: Array<string | undefined> = [
 		undefined, "BooleanLiteral", "StringLiteral", "SingleQuotedStringLiteral", 
 		"DoubleQuotedStringLiteral", "BacktickStringLiteral", "EscapeSequence", 
 		"UnicodeEscapeSequence", "NumberLiteral", "HexLiteral", "OctalLiteral", 
 		"BinaryLiteral", "DecimalLiteral", "LPAREN", "RPAREN", "LBRACE", "RBRACE", 
-		"LBRACK", "RBRACK", "LANGL", "RANGL", "COLON", "COMMA", "AMP", "BAR", 
-		"SPREAD", "DOT", "QUOTE", "WS", "KEYOF", "INFER", "IN", "AS", "EXTENDS", 
+		"LBRACK", "RBRACK", "LANGL", "RANGL", "COLON", "COMMA", "AMP", "QUESTION", 
+		"BAR", "SPREAD", "DOT", "QUOTE", "WS", "KEYOF", "INFER", "IN", "AS", "EXTENDS", 
 		"EXTENDS_Q", "IN_Q", "IF", "NEVER", "NULL", "UNDEFINED", "UNKNOWN", "OBJECT", 
 		"ANY", "STRING", "NUMBER", "BOOLEAN", "Identifier",
 	];
@@ -157,7 +158,7 @@ export class TypeSchemeParser extends Parser {
 			this.state = 31;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while ((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << TypeSchemeParser.BooleanLiteral) | (1 << TypeSchemeParser.StringLiteral) | (1 << TypeSchemeParser.NumberLiteral) | (1 << TypeSchemeParser.LPAREN) | (1 << TypeSchemeParser.LBRACE) | (1 << TypeSchemeParser.LBRACK) | (1 << TypeSchemeParser.SPREAD) | (1 << TypeSchemeParser.QUOTE) | (1 << TypeSchemeParser.KEYOF) | (1 << TypeSchemeParser.INFER) | (1 << TypeSchemeParser.IN))) !== 0) || ((((_la - 32)) & ~0x1F) === 0 && ((1 << (_la - 32)) & ((1 << (TypeSchemeParser.AS - 32)) | (1 << (TypeSchemeParser.EXTENDS - 32)) | (1 << (TypeSchemeParser.EXTENDS_Q - 32)) | (1 << (TypeSchemeParser.IN_Q - 32)) | (1 << (TypeSchemeParser.IF - 32)) | (1 << (TypeSchemeParser.NEVER - 32)) | (1 << (TypeSchemeParser.NULL - 32)) | (1 << (TypeSchemeParser.UNDEFINED - 32)) | (1 << (TypeSchemeParser.UNKNOWN - 32)) | (1 << (TypeSchemeParser.OBJECT - 32)) | (1 << (TypeSchemeParser.ANY - 32)) | (1 << (TypeSchemeParser.STRING - 32)) | (1 << (TypeSchemeParser.NUMBER - 32)) | (1 << (TypeSchemeParser.BOOLEAN - 32)) | (1 << (TypeSchemeParser.Identifier - 32)))) !== 0)) {
+			while ((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << TypeSchemeParser.BooleanLiteral) | (1 << TypeSchemeParser.StringLiteral) | (1 << TypeSchemeParser.NumberLiteral) | (1 << TypeSchemeParser.LPAREN) | (1 << TypeSchemeParser.LBRACE) | (1 << TypeSchemeParser.LBRACK) | (1 << TypeSchemeParser.SPREAD) | (1 << TypeSchemeParser.QUOTE) | (1 << TypeSchemeParser.KEYOF) | (1 << TypeSchemeParser.INFER))) !== 0) || ((((_la - 32)) & ~0x1F) === 0 && ((1 << (_la - 32)) & ((1 << (TypeSchemeParser.IN - 32)) | (1 << (TypeSchemeParser.AS - 32)) | (1 << (TypeSchemeParser.EXTENDS - 32)) | (1 << (TypeSchemeParser.EXTENDS_Q - 32)) | (1 << (TypeSchemeParser.IN_Q - 32)) | (1 << (TypeSchemeParser.IF - 32)) | (1 << (TypeSchemeParser.NEVER - 32)) | (1 << (TypeSchemeParser.NULL - 32)) | (1 << (TypeSchemeParser.UNDEFINED - 32)) | (1 << (TypeSchemeParser.UNKNOWN - 32)) | (1 << (TypeSchemeParser.OBJECT - 32)) | (1 << (TypeSchemeParser.ANY - 32)) | (1 << (TypeSchemeParser.STRING - 32)) | (1 << (TypeSchemeParser.NUMBER - 32)) | (1 << (TypeSchemeParser.BOOLEAN - 32)) | (1 << (TypeSchemeParser.Identifier - 32)))) !== 0)) {
 				{
 				{
 				this.state = 25;
@@ -620,7 +621,7 @@ export class TypeSchemeParser extends Parser {
 				this.state = 137;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
-			} while ((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << TypeSchemeParser.BooleanLiteral) | (1 << TypeSchemeParser.StringLiteral) | (1 << TypeSchemeParser.NumberLiteral) | (1 << TypeSchemeParser.LPAREN) | (1 << TypeSchemeParser.LBRACE) | (1 << TypeSchemeParser.LBRACK) | (1 << TypeSchemeParser.SPREAD) | (1 << TypeSchemeParser.QUOTE) | (1 << TypeSchemeParser.KEYOF) | (1 << TypeSchemeParser.INFER) | (1 << TypeSchemeParser.IN))) !== 0) || ((((_la - 32)) & ~0x1F) === 0 && ((1 << (_la - 32)) & ((1 << (TypeSchemeParser.AS - 32)) | (1 << (TypeSchemeParser.EXTENDS - 32)) | (1 << (TypeSchemeParser.EXTENDS_Q - 32)) | (1 << (TypeSchemeParser.IN_Q - 32)) | (1 << (TypeSchemeParser.IF - 32)) | (1 << (TypeSchemeParser.NEVER - 32)) | (1 << (TypeSchemeParser.NULL - 32)) | (1 << (TypeSchemeParser.UNDEFINED - 32)) | (1 << (TypeSchemeParser.UNKNOWN - 32)) | (1 << (TypeSchemeParser.OBJECT - 32)) | (1 << (TypeSchemeParser.ANY - 32)) | (1 << (TypeSchemeParser.STRING - 32)) | (1 << (TypeSchemeParser.NUMBER - 32)) | (1 << (TypeSchemeParser.BOOLEAN - 32)) | (1 << (TypeSchemeParser.Identifier - 32)))) !== 0));
+			} while ((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << TypeSchemeParser.BooleanLiteral) | (1 << TypeSchemeParser.StringLiteral) | (1 << TypeSchemeParser.NumberLiteral) | (1 << TypeSchemeParser.LPAREN) | (1 << TypeSchemeParser.LBRACE) | (1 << TypeSchemeParser.LBRACK) | (1 << TypeSchemeParser.SPREAD) | (1 << TypeSchemeParser.QUOTE) | (1 << TypeSchemeParser.KEYOF) | (1 << TypeSchemeParser.INFER))) !== 0) || ((((_la - 32)) & ~0x1F) === 0 && ((1 << (_la - 32)) & ((1 << (TypeSchemeParser.IN - 32)) | (1 << (TypeSchemeParser.AS - 32)) | (1 << (TypeSchemeParser.EXTENDS - 32)) | (1 << (TypeSchemeParser.EXTENDS_Q - 32)) | (1 << (TypeSchemeParser.IN_Q - 32)) | (1 << (TypeSchemeParser.IF - 32)) | (1 << (TypeSchemeParser.NEVER - 32)) | (1 << (TypeSchemeParser.NULL - 32)) | (1 << (TypeSchemeParser.UNDEFINED - 32)) | (1 << (TypeSchemeParser.UNKNOWN - 32)) | (1 << (TypeSchemeParser.OBJECT - 32)) | (1 << (TypeSchemeParser.ANY - 32)) | (1 << (TypeSchemeParser.STRING - 32)) | (1 << (TypeSchemeParser.NUMBER - 32)) | (1 << (TypeSchemeParser.BOOLEAN - 32)) | (1 << (TypeSchemeParser.Identifier - 32)))) !== 0));
 			this.state = 142;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
@@ -663,7 +664,7 @@ export class TypeSchemeParser extends Parser {
 			{
 			this.state = 147;
 			_la = this._input.LA(1);
-			if (!(((((_la - 37)) & ~0x1F) === 0 && ((1 << (_la - 37)) & ((1 << (TypeSchemeParser.NEVER - 37)) | (1 << (TypeSchemeParser.NULL - 37)) | (1 << (TypeSchemeParser.UNDEFINED - 37)) | (1 << (TypeSchemeParser.UNKNOWN - 37)) | (1 << (TypeSchemeParser.OBJECT - 37)) | (1 << (TypeSchemeParser.ANY - 37)) | (1 << (TypeSchemeParser.STRING - 37)) | (1 << (TypeSchemeParser.NUMBER - 37)) | (1 << (TypeSchemeParser.BOOLEAN - 37)))) !== 0))) {
+			if (!(((((_la - 38)) & ~0x1F) === 0 && ((1 << (_la - 38)) & ((1 << (TypeSchemeParser.NEVER - 38)) | (1 << (TypeSchemeParser.NULL - 38)) | (1 << (TypeSchemeParser.UNDEFINED - 38)) | (1 << (TypeSchemeParser.UNKNOWN - 38)) | (1 << (TypeSchemeParser.OBJECT - 38)) | (1 << (TypeSchemeParser.ANY - 38)) | (1 << (TypeSchemeParser.STRING - 38)) | (1 << (TypeSchemeParser.NUMBER - 38)) | (1 << (TypeSchemeParser.BOOLEAN - 38)))) !== 0))) {
 			this._errHandler.recoverInline(this);
 			} else {
 				if (this._input.LA(1) === Token.EOF) {
@@ -780,7 +781,7 @@ export class TypeSchemeParser extends Parser {
 			this.state = 183;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if ((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << TypeSchemeParser.BooleanLiteral) | (1 << TypeSchemeParser.StringLiteral) | (1 << TypeSchemeParser.NumberLiteral) | (1 << TypeSchemeParser.LPAREN) | (1 << TypeSchemeParser.LBRACE) | (1 << TypeSchemeParser.LBRACK) | (1 << TypeSchemeParser.SPREAD) | (1 << TypeSchemeParser.QUOTE) | (1 << TypeSchemeParser.KEYOF) | (1 << TypeSchemeParser.INFER) | (1 << TypeSchemeParser.IN))) !== 0) || ((((_la - 32)) & ~0x1F) === 0 && ((1 << (_la - 32)) & ((1 << (TypeSchemeParser.AS - 32)) | (1 << (TypeSchemeParser.EXTENDS - 32)) | (1 << (TypeSchemeParser.EXTENDS_Q - 32)) | (1 << (TypeSchemeParser.IN_Q - 32)) | (1 << (TypeSchemeParser.IF - 32)) | (1 << (TypeSchemeParser.NEVER - 32)) | (1 << (TypeSchemeParser.NULL - 32)) | (1 << (TypeSchemeParser.UNDEFINED - 32)) | (1 << (TypeSchemeParser.UNKNOWN - 32)) | (1 << (TypeSchemeParser.OBJECT - 32)) | (1 << (TypeSchemeParser.ANY - 32)) | (1 << (TypeSchemeParser.STRING - 32)) | (1 << (TypeSchemeParser.NUMBER - 32)) | (1 << (TypeSchemeParser.BOOLEAN - 32)) | (1 << (TypeSchemeParser.Identifier - 32)))) !== 0)) {
+			if ((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << TypeSchemeParser.BooleanLiteral) | (1 << TypeSchemeParser.StringLiteral) | (1 << TypeSchemeParser.NumberLiteral) | (1 << TypeSchemeParser.LPAREN) | (1 << TypeSchemeParser.LBRACE) | (1 << TypeSchemeParser.LBRACK) | (1 << TypeSchemeParser.SPREAD) | (1 << TypeSchemeParser.QUOTE) | (1 << TypeSchemeParser.KEYOF) | (1 << TypeSchemeParser.INFER))) !== 0) || ((((_la - 32)) & ~0x1F) === 0 && ((1 << (_la - 32)) & ((1 << (TypeSchemeParser.IN - 32)) | (1 << (TypeSchemeParser.AS - 32)) | (1 << (TypeSchemeParser.EXTENDS - 32)) | (1 << (TypeSchemeParser.EXTENDS_Q - 32)) | (1 << (TypeSchemeParser.IN_Q - 32)) | (1 << (TypeSchemeParser.IF - 32)) | (1 << (TypeSchemeParser.NEVER - 32)) | (1 << (TypeSchemeParser.NULL - 32)) | (1 << (TypeSchemeParser.UNDEFINED - 32)) | (1 << (TypeSchemeParser.UNKNOWN - 32)) | (1 << (TypeSchemeParser.OBJECT - 32)) | (1 << (TypeSchemeParser.ANY - 32)) | (1 << (TypeSchemeParser.STRING - 32)) | (1 << (TypeSchemeParser.NUMBER - 32)) | (1 << (TypeSchemeParser.BOOLEAN - 32)) | (1 << (TypeSchemeParser.Identifier - 32)))) !== 0)) {
 				{
 				{
 				this.state = 163;
@@ -899,7 +900,7 @@ export class TypeSchemeParser extends Parser {
 			this.state = 220;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (((((_la - 29)) & ~0x1F) === 0 && ((1 << (_la - 29)) & ((1 << (TypeSchemeParser.KEYOF - 29)) | (1 << (TypeSchemeParser.INFER - 29)) | (1 << (TypeSchemeParser.IN - 29)) | (1 << (TypeSchemeParser.AS - 29)) | (1 << (TypeSchemeParser.EXTENDS - 29)) | (1 << (TypeSchemeParser.EXTENDS_Q - 29)) | (1 << (TypeSchemeParser.IN_Q - 29)) | (1 << (TypeSchemeParser.IF - 29)) | (1 << (TypeSchemeParser.Identifier - 29)))) !== 0)) {
+			if (((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & ((1 << (TypeSchemeParser.KEYOF - 30)) | (1 << (TypeSchemeParser.INFER - 30)) | (1 << (TypeSchemeParser.IN - 30)) | (1 << (TypeSchemeParser.AS - 30)) | (1 << (TypeSchemeParser.EXTENDS - 30)) | (1 << (TypeSchemeParser.EXTENDS_Q - 30)) | (1 << (TypeSchemeParser.IN_Q - 30)) | (1 << (TypeSchemeParser.IF - 30)) | (1 << (TypeSchemeParser.Identifier - 30)))) !== 0)) {
 				{
 				{
 				this.state = 200;
@@ -1014,24 +1015,48 @@ export class TypeSchemeParser extends Parser {
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			}
-			this.state = 237;
+			this.state = 244;
+			this._errHandler.sync(this);
+			_la = this._input.LA(1);
+			if (_la === TypeSchemeParser.QUESTION) {
+				{
+				this.state = 237;
+				_localctx._opt = this.match(TypeSchemeParser.QUESTION);
+				this.state = 241;
+				this._errHandler.sync(this);
+				_la = this._input.LA(1);
+				while (_la === TypeSchemeParser.WS) {
+					{
+					{
+					this.state = 238;
+					this.match(TypeSchemeParser.WS);
+					}
+					}
+					this.state = 243;
+					this._errHandler.sync(this);
+					_la = this._input.LA(1);
+				}
+				}
+			}
+
+			this.state = 246;
 			this.match(TypeSchemeParser.COLON);
-			this.state = 241;
+			this.state = 250;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			while (_la === TypeSchemeParser.WS) {
 				{
 				{
-				this.state = 238;
+				this.state = 247;
 				this.match(TypeSchemeParser.WS);
 				}
 				}
-				this.state = 243;
+				this.state = 252;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			}
 			{
-			this.state = 244;
+			this.state = 253;
 			_localctx._value = this.sexpr(0);
 			}
 			}
@@ -1055,13 +1080,13 @@ export class TypeSchemeParser extends Parser {
 		let _localctx: IdentifierContext = new IdentifierContext(this._ctx, this.state);
 		this.enterRule(_localctx, 18, TypeSchemeParser.RULE_identifier);
 		try {
-			this.state = 248;
+			this.state = 257;
 			this._errHandler.sync(this);
 			switch (this._input.LA(1)) {
 			case TypeSchemeParser.Identifier:
 				this.enterOuterAlt(_localctx, 1);
 				{
-				this.state = 246;
+				this.state = 255;
 				this.match(TypeSchemeParser.Identifier);
 				}
 				break;
@@ -1075,7 +1100,7 @@ export class TypeSchemeParser extends Parser {
 			case TypeSchemeParser.IF:
 				this.enterOuterAlt(_localctx, 2);
 				{
-				this.state = 247;
+				this.state = 256;
 				this.reservedKeyword();
 				}
 				break;
@@ -1105,9 +1130,9 @@ export class TypeSchemeParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 250;
+			this.state = 259;
 			_la = this._input.LA(1);
-			if (!(((((_la - 29)) & ~0x1F) === 0 && ((1 << (_la - 29)) & ((1 << (TypeSchemeParser.KEYOF - 29)) | (1 << (TypeSchemeParser.INFER - 29)) | (1 << (TypeSchemeParser.IN - 29)) | (1 << (TypeSchemeParser.AS - 29)) | (1 << (TypeSchemeParser.EXTENDS - 29)) | (1 << (TypeSchemeParser.EXTENDS_Q - 29)) | (1 << (TypeSchemeParser.IN_Q - 29)) | (1 << (TypeSchemeParser.IF - 29)))) !== 0))) {
+			if (!(((((_la - 30)) & ~0x1F) === 0 && ((1 << (_la - 30)) & ((1 << (TypeSchemeParser.KEYOF - 30)) | (1 << (TypeSchemeParser.INFER - 30)) | (1 << (TypeSchemeParser.IN - 30)) | (1 << (TypeSchemeParser.AS - 30)) | (1 << (TypeSchemeParser.EXTENDS - 30)) | (1 << (TypeSchemeParser.EXTENDS_Q - 30)) | (1 << (TypeSchemeParser.IN_Q - 30)) | (1 << (TypeSchemeParser.IF - 30)))) !== 0))) {
 			this._errHandler.recoverInline(this);
 			} else {
 				if (this._input.LA(1) === Token.EOF) {
@@ -1162,7 +1187,7 @@ export class TypeSchemeParser extends Parser {
 	}
 
 	public static readonly _serializedATN: string =
-		"\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x030\xFF\x04\x02" +
+		"\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x031\u0108\x04\x02" +
 		"\t\x02\x04\x03\t\x03\x04\x04\t\x04\x04\x05\t\x05\x04\x06\t\x06\x04\x07" +
 		"\t\x07\x04\b\t\b\x04\t\t\t\x04\n\t\n\x04\v\t\v\x04\f\t\f\x03\x02\x05\x02" +
 		"\x1A\n\x02\x03\x02\x03\x02\x05\x02\x1E\n\x02\x07\x02 \n\x02\f\x02\x0E" +
@@ -1187,33 +1212,34 @@ export class TypeSchemeParser extends Parser {
 		"\x0E\t\xD0\v\t\x03\t\x03\t\x07\t\xD4\n\t\f\t\x0E\t\xD7\v\t\x03\t\x07\t" +
 		"\xDA\n\t\f\t\x0E\t\xDD\v\t\x05\t\xDF\n\t\x03\t\x07\t\xE2\n\t\f\t\x0E\t" +
 		"\xE5\v\t\x03\t\x03\t\x03\n\x03\n\x07\n\xEB\n\n\f\n\x0E\n\xEE\v\n\x03\n" +
-		"\x03\n\x07\n\xF2\n\n\f\n\x0E\n\xF5\v\n\x03\n\x03\n\x03\v\x03\v\x05\v\xFB" +
-		"\n\v\x03\f\x03\f\x03\f\x02\x02\x03\x04\r\x02\x02\x04\x02\x06\x02\b\x02" +
-		"\n\x02\f\x02\x0E\x02\x10\x02\x12\x02\x14\x02\x16\x02\x02\x04\x03\x02\'" +
-		"/\x03\x02\x1F&\x02\u011F\x02\x19\x03\x02\x02\x02\x04=\x03\x02\x02\x02" +
-		"\x06y\x03\x02\x02\x02\b{\x03\x02\x02\x02\n\x95\x03\x02\x02\x02\f\x9C\x03" +
-		"\x02\x02\x02\x0E\x9E\x03\x02\x02\x02\x10\xC3\x03\x02\x02\x02\x12\xE8\x03" +
-		"\x02\x02\x02\x14\xFA\x03\x02\x02\x02\x16\xFC\x03\x02\x02\x02\x18\x1A\x07" +
-		"\x1E\x02\x02\x19\x18\x03\x02\x02\x02\x19\x1A\x03\x02\x02\x02\x1A!\x03" +
-		"\x02\x02\x02\x1B\x1D\x05\x04\x03\x02\x1C\x1E\x07\x1E\x02\x02\x1D\x1C\x03" +
-		"\x02\x02\x02\x1D\x1E\x03\x02\x02\x02\x1E \x03\x02\x02\x02\x1F\x1B\x03" +
-		"\x02\x02\x02 #\x03\x02\x02\x02!\x1F\x03\x02\x02\x02!\"\x03\x02\x02\x02" +
-		"\"$\x03\x02\x02\x02#!\x03\x02\x02\x02$%\x07\x02\x02\x03%\x03\x03\x02\x02" +
-		"\x02&\'\b\x03\x01\x02\'>\x05\x06\x04\x02(,\x07\x0F\x02\x02)+\x07\x1E\x02" +
-		"\x02*)\x03\x02\x02\x02+.\x03\x02\x02\x02,*\x03\x02\x02\x02,-\x03\x02\x02" +
-		"\x02-/\x03\x02\x02\x02.,\x03\x02\x02\x02/3\x05\x04\x03\x0202\x07\x1E\x02" +
-		"\x0210\x03\x02\x02\x0225\x03\x02\x02\x0231\x03\x02\x02\x0234\x03\x02\x02" +
-		"\x0246\x03\x02\x02\x0253\x03\x02\x02\x0267\x07\x10\x02\x027>\x03\x02\x02" +
-		"\x0289\x07\x1D\x02\x029>\x05\x04\x03\n:>\x05\b\x05\x02;<\x07\x1B\x02\x02" +
-		"<>\x05\x04\x03\x03=&\x03\x02\x02\x02=(\x03\x02\x02\x02=8\x03\x02\x02\x02" +
+		"\x03\n\x07\n\xF2\n\n\f\n\x0E\n\xF5\v\n\x05\n\xF7\n\n\x03\n\x03\n\x07\n" +
+		"\xFB\n\n\f\n\x0E\n\xFE\v\n\x03\n\x03\n\x03\v\x03\v\x05\v\u0104\n\v\x03" +
+		"\f\x03\f\x03\f\x02\x02\x03\x04\r\x02\x02\x04\x02\x06\x02\b\x02\n\x02\f" +
+		"\x02\x0E\x02\x10\x02\x12\x02\x14\x02\x16\x02\x02\x04\x03\x02(0\x03\x02" +
+		" \'\x02\u012A\x02\x19\x03\x02\x02\x02\x04=\x03\x02\x02\x02\x06y\x03\x02" +
+		"\x02\x02\b{\x03\x02\x02\x02\n\x95\x03\x02\x02\x02\f\x9C\x03\x02\x02\x02" +
+		"\x0E\x9E\x03\x02\x02\x02\x10\xC3\x03\x02\x02\x02\x12\xE8\x03\x02\x02\x02" +
+		"\x14\u0103\x03\x02\x02\x02\x16\u0105\x03\x02\x02\x02\x18\x1A\x07\x1F\x02" +
+		"\x02\x19\x18\x03\x02\x02\x02\x19\x1A\x03\x02\x02\x02\x1A!\x03\x02\x02" +
+		"\x02\x1B\x1D\x05\x04\x03\x02\x1C\x1E\x07\x1F\x02\x02\x1D\x1C\x03\x02\x02" +
+		"\x02\x1D\x1E\x03\x02\x02\x02\x1E \x03\x02\x02\x02\x1F\x1B\x03\x02\x02" +
+		"\x02 #\x03\x02\x02\x02!\x1F\x03\x02\x02\x02!\"\x03\x02\x02\x02\"$\x03" +
+		"\x02\x02\x02#!\x03\x02\x02\x02$%\x07\x02\x02\x03%\x03\x03\x02\x02\x02" +
+		"&\'\b\x03\x01\x02\'>\x05\x06\x04\x02(,\x07\x0F\x02\x02)+\x07\x1F\x02\x02" +
+		"*)\x03\x02\x02\x02+.\x03\x02\x02\x02,*\x03\x02\x02\x02,-\x03\x02\x02\x02" +
+		"-/\x03\x02\x02\x02.,\x03\x02\x02\x02/3\x05\x04\x03\x0202\x07\x1F\x02\x02" +
+		"10\x03\x02\x02\x0225\x03\x02\x02\x0231\x03\x02\x02\x0234\x03\x02\x02\x02" +
+		"46\x03\x02\x02\x0253\x03\x02\x02\x0267\x07\x10\x02\x027>\x03\x02\x02\x02" +
+		"89\x07\x1E\x02\x029>\x05\x04\x03\n:>\x05\b\x05\x02;<\x07\x1C\x02\x02<" +
+		">\x05\x04\x03\x03=&\x03\x02\x02\x02=(\x03\x02\x02\x02=8\x03\x02\x02\x02" +
 		"=:\x03\x02\x02\x02=;\x03\x02\x02\x02>s\x03\x02\x02\x02?C\f\b\x02\x02@" +
-		"B\x07\x1E\x02\x02A@\x03\x02\x02\x02BE\x03\x02\x02\x02CA\x03\x02\x02\x02" +
-		"CD\x03\x02\x02\x02DF\x03\x02\x02\x02EC\x03\x02\x02\x02FJ\x07\x1A\x02\x02" +
-		"GI\x07\x1E\x02\x02HG\x03\x02\x02\x02IL\x03\x02\x02\x02JH\x03\x02\x02\x02" +
+		"B\x07\x1F\x02\x02A@\x03\x02\x02\x02BE\x03\x02\x02\x02CA\x03\x02\x02\x02" +
+		"CD\x03\x02\x02\x02DF\x03\x02\x02\x02EC\x03\x02\x02\x02FJ\x07\x1B\x02\x02" +
+		"GI\x07\x1F\x02\x02HG\x03\x02\x02\x02IL\x03\x02\x02\x02JH\x03\x02\x02\x02" +
 		"JK\x03\x02\x02\x02KM\x03\x02\x02\x02LJ\x03\x02\x02\x02Mr\x05\x04\x03\t" +
-		"NR\f\x07\x02\x02OQ\x07\x1E\x02\x02PO\x03\x02\x02\x02QT\x03\x02\x02\x02" +
+		"NR\f\x07\x02\x02OQ\x07\x1F\x02\x02PO\x03\x02\x02\x02QT\x03\x02\x02\x02" +
 		"RP\x03\x02\x02\x02RS\x03\x02\x02\x02SU\x03\x02\x02\x02TR\x03\x02\x02\x02" +
-		"UY\x07\x19\x02\x02VX\x07\x1E\x02\x02WV\x03\x02\x02\x02X[\x03\x02\x02\x02" +
+		"UY\x07\x19\x02\x02VX\x07\x1F\x02\x02WV\x03\x02\x02\x02X[\x03\x02\x02\x02" +
 		"YW\x03\x02\x02\x02YZ\x03\x02\x02\x02Z\\\x03\x02\x02\x02[Y\x03\x02\x02" +
 		"\x02\\r\x05\x04\x03\b]^\f\t\x02\x02^_\x07\x13\x02\x02_r\x07\x14\x02\x02" +
 		"`a\f\x06\x02\x02ab\x07\x13\x02\x02bc\x05\x04\x03\x02cd\x07\x14\x02\x02" +
@@ -1225,13 +1251,13 @@ export class TypeSchemeParser extends Parser {
 		"sq\x03\x02\x02\x02st\x03\x02\x02\x02t\x05\x03\x02\x02\x02us\x03\x02\x02" +
 		"\x02vz\x05\n\x06\x02wz\x05\f\x07\x02xz\x05\x14\v\x02yv\x03\x02\x02\x02" +
 		"yw\x03\x02\x02\x02yx\x03\x02\x02\x02z\x07\x03\x02\x02\x02{\x7F\x07\x0F" +
-		"\x02\x02|~\x07\x1E\x02\x02}|\x03\x02\x02\x02~\x81\x03\x02\x02\x02\x7F" +
+		"\x02\x02|~\x07\x1F\x02\x02}|\x03\x02\x02\x02~\x81\x03\x02\x02\x02\x7F" +
 		"}\x03\x02\x02\x02\x7F\x80\x03\x02\x02\x02\x80\x89\x03\x02\x02\x02\x81" +
-		"\x7F\x03\x02\x02\x02\x82\x86\x05\x04\x03\x02\x83\x85\x07\x1E\x02\x02\x84" +
+		"\x7F\x03\x02\x02\x02\x82\x86\x05\x04\x03\x02\x83\x85\x07\x1F\x02\x02\x84" +
 		"\x83\x03\x02\x02\x02\x85\x88\x03\x02\x02\x02\x86\x84\x03\x02\x02\x02\x86" +
 		"\x87\x03\x02\x02\x02\x87\x8A\x03\x02\x02\x02\x88\x86\x03\x02\x02\x02\x89" +
 		"\x82\x03\x02\x02\x02\x8A\x8B\x03\x02\x02\x02\x8B\x89\x03\x02\x02\x02\x8B" +
-		"\x8C\x03\x02\x02\x02\x8C\x90\x03\x02\x02\x02\x8D\x8F\x07\x1E\x02\x02\x8E" +
+		"\x8C\x03\x02\x02\x02\x8C\x90\x03\x02\x02\x02\x8D\x8F\x07\x1F\x02\x02\x8E" +
 		"\x8D\x03\x02\x02\x02\x8F\x92\x03\x02\x02\x02\x90\x8E\x03\x02\x02\x02\x90" +
 		"\x91\x03\x02\x02\x02\x91\x93\x03\x02\x02\x02\x92\x90\x03\x02\x02\x02\x93" +
 		"\x94\x07\x10\x02\x02\x94\t\x03\x02\x02\x02\x95\x96\t\x02\x02\x02\x96\v" +
@@ -1239,45 +1265,49 @@ export class TypeSchemeParser extends Parser {
 		"\x07\n\x02\x02\x9A\x9D\x05\x0E\b\x02\x9B\x9D\x05\x10\t\x02\x9C\x97\x03" +
 		"\x02\x02\x02\x9C\x98\x03\x02\x02\x02\x9C\x99\x03\x02\x02\x02\x9C\x9A\x03" +
 		"\x02\x02\x02\x9C\x9B\x03\x02\x02\x02\x9D\r\x03\x02\x02\x02\x9E\xA2\x07" +
-		"\x13\x02\x02\x9F\xA1\x07\x1E\x02\x02\xA0\x9F\x03\x02\x02\x02\xA1\xA4\x03" +
+		"\x13\x02\x02\x9F\xA1\x07\x1F\x02\x02\xA0\x9F\x03\x02\x02\x02\xA1\xA4\x03" +
 		"\x02\x02\x02\xA2\xA0\x03\x02\x02\x02\xA2\xA3\x03\x02\x02\x02\xA3\xB9\x03" +
 		"\x02\x02\x02\xA4\xA2\x03\x02\x02\x02\xA5\xA9\x05\x04\x03\x02\xA6\xA8\x07" +
-		"\x1E\x02\x02\xA7\xA6\x03\x02\x02\x02\xA8\xAB\x03\x02\x02\x02\xA9\xA7\x03" +
+		"\x1F\x02\x02\xA7\xA6\x03\x02\x02\x02\xA8\xAB\x03\x02\x02\x02\xA9\xA7\x03" +
 		"\x02\x02\x02\xA9\xAA\x03\x02\x02\x02\xAA\xB6\x03\x02\x02\x02\xAB\xA9\x03" +
-		"\x02\x02\x02\xAC\xB0\x07\x18\x02\x02\xAD\xAF\x07\x1E\x02\x02\xAE\xAD\x03" +
+		"\x02\x02\x02\xAC\xB0\x07\x18\x02\x02\xAD\xAF\x07\x1F\x02\x02\xAE\xAD\x03" +
 		"\x02\x02\x02\xAF\xB2\x03\x02\x02\x02\xB0\xAE\x03\x02\x02\x02\xB0\xB1\x03" +
 		"\x02\x02\x02\xB1\xB3\x03\x02\x02\x02\xB2\xB0\x03\x02\x02\x02\xB3\xB5\x05" +
 		"\x04\x03\x02\xB4\xAC\x03\x02\x02\x02\xB5\xB8\x03\x02\x02\x02\xB6\xB4\x03" +
 		"\x02\x02\x02\xB6\xB7\x03\x02\x02\x02\xB7\xBA\x03\x02\x02\x02\xB8\xB6\x03" +
 		"\x02\x02\x02\xB9\xA5\x03\x02\x02\x02\xB9\xBA\x03\x02\x02\x02\xBA\xBE\x03" +
-		"\x02\x02\x02\xBB\xBD\x07\x1E\x02\x02\xBC\xBB\x03\x02\x02\x02\xBD\xC0\x03" +
+		"\x02\x02\x02\xBB\xBD\x07\x1F\x02\x02\xBC\xBB\x03\x02\x02\x02\xBD\xC0\x03" +
 		"\x02\x02\x02\xBE\xBC\x03\x02\x02\x02\xBE\xBF\x03\x02\x02\x02\xBF\xC1\x03" +
 		"\x02\x02\x02\xC0\xBE\x03\x02\x02\x02\xC1\xC2\x07\x14\x02\x02\xC2\x0F\x03" +
-		"\x02\x02\x02\xC3\xC7\x07\x11\x02\x02\xC4\xC6\x07\x1E\x02\x02\xC5\xC4\x03" +
+		"\x02\x02\x02\xC3\xC7\x07\x11\x02\x02\xC4\xC6\x07\x1F\x02\x02\xC5\xC4\x03" +
 		"\x02\x02\x02\xC6\xC9\x03\x02\x02\x02\xC7\xC5\x03\x02\x02\x02\xC7\xC8\x03" +
 		"\x02\x02\x02\xC8\xDE\x03\x02\x02\x02\xC9\xC7\x03\x02\x02\x02\xCA\xCE\x05" +
-		"\x12\n\x02\xCB\xCD\x07\x1E\x02\x02\xCC\xCB\x03\x02\x02\x02\xCD\xD0\x03" +
+		"\x12\n\x02\xCB\xCD\x07\x1F\x02\x02\xCC\xCB\x03\x02\x02\x02\xCD\xD0\x03" +
 		"\x02\x02\x02\xCE\xCC\x03\x02\x02\x02\xCE\xCF\x03\x02\x02\x02\xCF\xDB\x03" +
 		"\x02\x02\x02\xD0\xCE\x03\x02\x02\x02\xD1\xD5\x07\x18\x02\x02\xD2\xD4\x07" +
-		"\x1E\x02\x02\xD3\xD2\x03\x02\x02\x02\xD4\xD7\x03\x02\x02\x02\xD5\xD3\x03" +
+		"\x1F\x02\x02\xD3\xD2\x03\x02\x02\x02\xD4\xD7\x03\x02\x02\x02\xD5\xD3\x03" +
 		"\x02\x02\x02\xD5\xD6\x03\x02\x02\x02\xD6\xD8\x03\x02\x02\x02\xD7\xD5\x03" +
 		"\x02\x02\x02\xD8\xDA\x05\x12\n\x02\xD9\xD1\x03\x02\x02\x02\xDA\xDD\x03" +
 		"\x02\x02\x02\xDB\xD9\x03\x02\x02\x02\xDB\xDC\x03\x02\x02\x02\xDC\xDF\x03" +
 		"\x02\x02\x02\xDD\xDB\x03\x02\x02\x02\xDE\xCA\x03\x02\x02\x02\xDE\xDF\x03" +
-		"\x02\x02\x02\xDF\xE3\x03\x02\x02\x02\xE0\xE2\x07\x1E\x02\x02\xE1\xE0\x03" +
+		"\x02\x02\x02\xDF\xE3\x03\x02\x02\x02\xE0\xE2\x07\x1F\x02\x02\xE1\xE0\x03" +
 		"\x02\x02\x02\xE2\xE5\x03\x02\x02\x02\xE3\xE1\x03\x02\x02\x02\xE3\xE4\x03" +
 		"\x02\x02\x02\xE4\xE6\x03\x02\x02\x02\xE5\xE3\x03\x02\x02\x02\xE6\xE7\x07" +
 		"\x12\x02\x02\xE7\x11\x03\x02\x02\x02\xE8\xEC\x05\x14\v\x02\xE9\xEB\x07" +
-		"\x1E\x02\x02\xEA\xE9\x03\x02\x02\x02\xEB\xEE\x03\x02\x02\x02\xEC\xEA\x03" +
-		"\x02\x02\x02\xEC\xED\x03\x02\x02\x02\xED\xEF\x03\x02\x02\x02\xEE\xEC\x03" +
-		"\x02\x02\x02\xEF\xF3\x07\x17\x02\x02\xF0\xF2\x07\x1E\x02\x02\xF1\xF0\x03" +
+		"\x1F\x02\x02\xEA\xE9\x03\x02\x02\x02\xEB\xEE\x03\x02\x02\x02\xEC\xEA\x03" +
+		"\x02\x02\x02\xEC\xED\x03\x02\x02\x02\xED\xF6\x03\x02\x02\x02\xEE\xEC\x03" +
+		"\x02\x02\x02\xEF\xF3\x07\x1A\x02\x02\xF0\xF2\x07\x1F\x02\x02\xF1\xF0\x03" +
 		"\x02\x02\x02\xF2\xF5\x03\x02\x02\x02\xF3\xF1\x03\x02\x02\x02\xF3\xF4\x03" +
-		"\x02\x02\x02\xF4\xF6\x03\x02\x02\x02\xF5\xF3\x03\x02\x02\x02\xF6\xF7\x05" +
-		"\x04\x03\x02\xF7\x13\x03\x02\x02\x02\xF8\xFB\x070\x02\x02\xF9\xFB\x05" +
-		"\x16\f\x02\xFA\xF8\x03\x02\x02\x02\xFA\xF9\x03\x02\x02\x02\xFB\x15\x03" +
-		"\x02\x02\x02\xFC\xFD\t\x03\x02\x02\xFD\x17\x03\x02\x02\x02$\x19\x1D!," +
-		"3=CJRYlqsy\x7F\x86\x8B\x90\x9C\xA2\xA9\xB0\xB6\xB9\xBE\xC7\xCE\xD5\xDB" +
-		"\xDE\xE3\xEC\xF3\xFA";
+		"\x02\x02\x02\xF4\xF7\x03\x02\x02\x02\xF5\xF3\x03\x02\x02\x02\xF6\xEF\x03" +
+		"\x02\x02\x02\xF6\xF7\x03\x02\x02\x02\xF7\xF8\x03\x02\x02\x02\xF8\xFC\x07" +
+		"\x17\x02\x02\xF9\xFB\x07\x1F\x02\x02\xFA\xF9\x03\x02\x02\x02\xFB\xFE\x03" +
+		"\x02\x02\x02\xFC\xFA\x03\x02\x02\x02\xFC\xFD\x03\x02\x02\x02\xFD\xFF\x03" +
+		"\x02\x02\x02\xFE\xFC\x03\x02\x02\x02\xFF\u0100\x05\x04\x03\x02\u0100\x13" +
+		"\x03\x02\x02\x02\u0101\u0104\x071\x02\x02\u0102\u0104\x05\x16\f\x02\u0103" +
+		"\u0101\x03\x02\x02\x02\u0103\u0102\x03\x02\x02\x02\u0104\x15\x03\x02\x02" +
+		"\x02\u0105\u0106\t\x03\x02\x02\u0106\x17\x03\x02\x02\x02&\x19\x1D!,3=" +
+		"CJRYlqsy\x7F\x86\x8B\x90\x9C\xA2\xA9\xB0\xB6\xB9\xBE\xC7\xCE\xD5\xDB\xDE" +
+		"\xE3\xEC\xF3\xF6\xFC\u0103";
 	public static __ATN: ATN;
 	public static get _ATN(): ATN {
 		if (!TypeSchemeParser.__ATN) {
@@ -1999,6 +2029,7 @@ export class ObjectLiteralContext extends ParserRuleContext {
 
 export class ObjectPropContext extends ParserRuleContext {
 	public _key!: IdentifierContext;
+	public _opt!: Token;
 	public _value!: SexprContext;
 	public COLON(): TerminalNode { return this.getToken(TypeSchemeParser.COLON, 0); }
 	public identifier(): IdentifierContext | undefined {
@@ -2016,6 +2047,7 @@ export class ObjectPropContext extends ParserRuleContext {
 	public sexpr(): SexprContext | undefined {
 		return this.tryGetRuleContext(0, SexprContext);
 	}
+	public QUESTION(): TerminalNode | undefined { return this.tryGetToken(TypeSchemeParser.QUESTION, 0); }
 	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
 		super(parent, invokingState);
 	}

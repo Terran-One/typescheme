@@ -150,6 +150,12 @@ export function cg(env: any, ast: AST.Node): any {
 			return newItems[0].ty;
 		}
 		return new AST.TupleLiteral(AST.List.of(newItems));
+	} else if (ast instanceof AST.ObjectLiteral) {
+		let newProps: AST.Prop[] = [];
+		for (let i = 0; i < ast.props.length; i++) {
+			newProps.push(new AST.Prop(ast.props.at(i).key, cg(env, ast.props.at(i).value)));
+		}
+		return new AST.ObjectLiteral(AST.List.of(newProps));
 	} else if (ast instanceof AST.Spread) {
 		let ty = cg(env, ast.ty);
 		if (ty instanceof AST.TupleLiteral || ty instanceof AST.ArrayOf) {

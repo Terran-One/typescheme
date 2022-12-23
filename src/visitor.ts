@@ -14,7 +14,6 @@ import {
 	T_BarContext,
 } from "./grammar/TypeSchemeParser";
 import {TypeSchemeParserVisitor} from "./grammar/TypeSchemeParserVisitor";
-import {BooleanLiteral, Prop} from "./ast";
 
 const id = (x: any) => x;
 
@@ -35,6 +34,7 @@ export class TypeSchemeASTVisitor extends AbstractParseTreeVisitor<any> implemen
 
 	visitList(ctx: any): AST.List<AST.Node> {
 		let items = ctx.sexpr().map((l: any) => this.visit(l));
+		return AST.List.of(items);
 		return AST.List.of(items);
 	}
 
@@ -120,7 +120,8 @@ export class TypeSchemeASTVisitor extends AbstractParseTreeVisitor<any> implemen
 	visitObjectProp(ctx: ObjectPropContext): AST.Prop {
 		let key = this.visitIdentifier(ctx._key);
 		let value = this.visit(ctx._value);
-		return new AST.Prop(key, value);
+		let optional = ctx._opt !== undefined;
+		return new AST.Prop(key.text, value, optional);
 	}
 
 	visitPrimitive(ctx: PrimitiveContext): AST.Primitive {

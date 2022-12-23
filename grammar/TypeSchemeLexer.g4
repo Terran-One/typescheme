@@ -28,6 +28,7 @@ RANGL: '>';
 COLON: ':';
 COMMA: ',';
 AMP: '&';
+QUESTION: '?';
 BAR: '|';
 SPREAD: '...';
 DOT: '.';

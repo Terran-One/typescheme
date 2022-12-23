@@ -7,7 +7,7 @@ import {
 	BooleanLiteral,
 	TupleLiteral,
 	StringLiteral,
-	Spread, ArrayOf, Node
+	Spread, ArrayOf, Node, ObjectLiteral, Prop
 } from '../ast';
 
 import {cg} from '../eval';
@@ -54,6 +54,16 @@ export function spread(x: any) {
 
 export function arr(x: any) {
 	return new ArrayOf(x);
+}
+
+export function obj(x: object) {
+	return new ObjectLiteral(List.of(Object.entries(x).map(([k, v]) => {
+		if (k.endsWith('?')) {
+			return new Prop(k.slice(0, k.length - 1), v, true);
+		} else {
+			return new Prop(k, v);
+		}
+	})));
 }
 
 export function assertProperty(...args: [...any[], (...x: any[]) => boolean]) {
@@ -113,8 +123,9 @@ export const t_boolean = Primitive.Boolean();
 export const t_any = Primitive.Any();
 export const t_never = Primitive.Never();
 export const t_unknown = Primitive.Unknown();
+export const t_undefined = Primitive.Undefined();
 
-export const Primitives = [t_number, t_string, t_boolean, t_any, t_never, t_unknown];
+export const Primitives = [t_number, t_string, t_boolean, t_any, t_never, t_unknown, t_undefined];
 
 export namespace Arb {
 	export const primitive = fc.integer({min: 0, max: Primitives.length - 1}).map(x => Primitives[x]);
