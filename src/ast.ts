@@ -2,6 +2,47 @@ import * as _ from 'lodash';
 import {NFA} from "./fsm";
 
 
+export function lessSpecificType(a: Node, b: Node) {
+	if (!a.isCompatible(b)) {
+		return undefined;
+	}
+
+	if (a.equals(Primitive.Any())) {
+		return b;
+	}
+
+	if (b.equals(Primitive.Any())) {
+		return a;
+	}
+
+	if (a.isSubtypeOf(b)) {
+		if (b.isSubtypeOf(a)) {
+			return b; // same specificity
+		} else {
+			return a; // a is more specific
+		}
+	} else {
+		// b is subtype of a
+		if (a.isSubtypeOf(b)) {
+			return a; // same specificity
+		} else {
+			return b; // b is more specific
+		}
+	}
+}
+
+export function moreSpecificType(a: Node, b: Node) {
+	let lessSpecific = lessSpecificType(b, a);
+	if (lessSpecific === undefined) {
+		return undefined;
+	}
+	if (lessSpecific.equals(a)) {
+		return b;
+	} else {
+		return a;
+	}
+}
+
 export class Node {
 	constructor(public _parent: Node | null = null) {
 	}
@@ -443,7 +484,7 @@ export class IntersectionOf extends Node {
 
 	isSubtypeOf(other: Node): boolean {
 		if (other instanceof IntersectionOf) {
-			return this.types.every(t => t.isCompatible(other));
+			return other.types.every(o => this.types.some(t => t.isSubtypeOf(o)));
 		} else {
 			return super.isSubtypeOf(other);
 		}
@@ -563,6 +604,42 @@ export class Primitive extends Node {
 		return this.ty;
 	}
 
+	intersect(other: Node): Node {
+		if (this.ty === 'any') {
+			return other;
+		} else if (this.ty === 'never') {
+			return this;
+		} else if (other instanceof Primitive) {
+			if (other.ty === 'any' || this.ty === other.ty) {
+				return this;
+			} else {
+				return Primitive.Never();
+			}
+		} else if (other instanceof BooleanLiteral || other instanceof NumberLiteral || other instanceof StringLiteral) {
+			return other.intersect(this);
+		} else {
+			return super.intersect(other);
+		}
+	}
+
+	union(other: Node): Node {
+		if (this.ty === 'any') {
+			return this;
+		} else if (this.ty === 'never') {
+			return other;
+		} else if (other instanceof Primitive) {
+			if (other.ty === 'never' || this.ty === other.ty) {
+				return this;
+			} else {
+				return new UnionOf(List.of([this, other]));
+			}
+		} else if (other instanceof BooleanLiteral || other instanceof NumberLiteral || other instanceof StringLiteral) {
+			return other.union(this);
+		} else {
+			return super.union(other);
+		}
+	}
+
 }
 
 export class Identifier extends Node {
@@ -587,7 +664,24 @@ export class ObjectLiteral extends Node {
 	}
 
 	intersect(other: Node): Node {
-		return super.intersect(other);
+		if (other instanceof ObjectLiteral) {
+			let newProps: Array<Prop> = [...this.props];
+			for (let o of other.props) {
+				let p = newProps.find(p => p.key === o.key);
+				if (p) {
+					// check optional
+					if (p.optional && !o.optional) {
+						p.optional = false;
+					}
+					p.value = p.value.intersect(o.value);
+				} else {
+					newProps.push(o);
+				}
+			}
+			return new ObjectLiteral(List.of(newProps));
+		} else {
+			return super.intersect(other);
+		}
 	}
 
 	isSubtypeOf(other: Node): boolean {
@@ -608,6 +702,8 @@ export class ObjectLiteral extends Node {
 					return o.optional;
 				}
 			});
+		} else if (other.equals(Primitive.Object())) {
+			return true;
 		} else {
 			return super.isSubtypeOf(other);
 		}
@@ -953,11 +1049,29 @@ export class BooleanLiteral extends Node {
 
 	intersect(other: Node): Node {
 		if (other instanceof BooleanLiteral) {
-			return this;
+			if (this.value === other.value) {
+				return this;
+			} else {
+				return Primitive.Never();
+			}
 		} else if (other.equals(Primitive.Boolean())) {
 			return this;
 		} else {
-			return Primitive.Never();
+			return super.intersect(other);
+		}
+	}
+
+	union(other: Node): Node {
+		if (other instanceof BooleanLiteral) {
+			if (this.value === other.value) {
+				return this;
+			} else {
+				return new UnionOf(List.of([this, other]));
+			}
+		} else if (other.equals(Primitive.Boolean())) {
+			return other;
+		} else {
+			return super.union(other);
 		}
 	}
 }
@@ -990,6 +1104,20 @@ export class NumberLiteral extends Node {
 			return this;
 		} else {
 			return super.intersect(other);
+		}
+	}
+
+	union(other: Node): Node {
+		if (other instanceof NumberLiteral) {
+			if (this.value === other.value) {
+				return this;
+			} else {
+				return new UnionOf(List.of([this, other]));
+			}
+		} else if (other.equals(Primitive.Number())) {
+			return other;
+		} else {
+			return super.union(other);
 		}
 	}
 }

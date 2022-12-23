@@ -164,55 +164,24 @@ export function cg(env: any, ast: AST.Node): any {
 			return new AST.Spread(ty);
 		}
 	} else if (ast instanceof AST.UnionOf) {
-		let newTypes: AST.SExpr[] = [];
+		let currentUnion: AST.Node = AST.Primitive.Never();
 		for (let i = 0; i < ast.types.length; i++) {
 			let x = cg(env, ast.types.at(i));
-			let currUnion = new AST.UnionOf(AST.List.of(newTypes));
-			if (x.equals(AST.Primitive.Any())) {
+			currentUnion = currentUnion.union(x);
+			if (currentUnion.equals(AST.Primitive.Any())) {
 				return AST.Primitive.Any();
-			} else if (x instanceof AST.UnionOf) {
-				let nonIntersecting = newTypes.filter(t => !t.isSubtypeOf(x));
-				newTypes = [...nonIntersecting, ...x.types.map(t => cg(env, t)).filter(t => !t.isSubtypeOf(currUnion))];
-			} else {
-				if (x.isSubtypeOf(currUnion)) {
-					continue; // skip
-				}
-				let nonIntersecting = newTypes.filter(t => !t.isSubtypeOf(x));
-				newTypes = [...nonIntersecting, x];
 			}
 		}
-		return new AST.UnionOf(AST.List.of(newTypes));
+		return currentUnion;
 	} else if (ast instanceof AST.IntersectionOf) {
 		// Intersection, unlike union, should resolve to the most specific type.
 		let currentIntersection: AST.Node = AST.Primitive.Any();
 		for (let i = 0; i < ast.types.length; i++) {
 			let x = cg(env, ast.types.at(i));
-			if (x.equals(AST.Primitive.Never())) {
+			console.log(`intersecting ${currentIntersection.toString()} with ${x.toString()} = ${currentIntersection.intersect(x)}`);
+			currentIntersection = currentIntersection.intersect(x);
+			if (currentIntersection.equals(AST.Primitive.Never())) {
 				return AST.Primitive.Never();
-			} else if (x instanceof AST.IntersectionOf) {
-				for (let t of x.types) {
-					if (!t.isSubtypeOf(currentIntersection) && !currentIntersection.isSubtypeOf(t)) {
-						return AST.Primitive.Never();
-					} else {
-						// t extends currentIntersection, but we want to check if more specific
-						if (!currentIntersection.isSubtypeOf(t)) {
-							currentIntersection = t;
-						}
-						// otherwise, currentIntersection is already the most specific type
-					}
-				}
-			} else if (x instanceof AST.UnionOf) {
-				return x.intersect(currentIntersection);
-			} else {
-				if (!x.isCompatible(currentIntersection)) {
-					return AST.Primitive.Never();
-				} else {
-					// x extends currentIntersection, but we want to check if more specific
-					if (x.isSubtypeOf(currentIntersection)) {
-						currentIntersection = x;
-					}
-					// otherwise, currentIntersection is already the most specific type
-				}
 			}
 		}
 		return currentIntersection;

@@ -1,5 +1,5 @@
 import {
-	run,
+	configureRun,
 	union,
 	t_boolean,
 	t_string,
@@ -20,7 +20,7 @@ import {
 	t_unknown,
 	intersection,
 	Primitives,
-	Arb, assertProperty, implies, powerset
+	Arb, assertProperty, implies, powerset, iff
 } from '../src/helpers';
 
 import {
@@ -29,8 +29,13 @@ import {
 
 import * as fc from 'fast-check';
 
-let env = {};
+let env: any = {};
 
+let run = configureRun(() => {
+	return env
+}, (x: any) => {
+	env = x;
+});
 
 describe("Subtype", () => {
 
@@ -51,26 +56,26 @@ describe("Subtype", () => {
 	});
 
 	it('unknown is subtype of no type except unknown and any', () => {
-		assertProperty(Arb.native, (x: Node) => implies(!x.equals(t_any) && !x.equals(t_unknown), !t_unknown.isSubtypeOf(x)));
+		assertProperty(Arb.native, (x: Node) => iff(!x.equals(t_any) && !x.equals(t_unknown), !t_unknown.isSubtypeOf(x)));
 	})
 
 	it('never is subtype of no type except never, unknown, undefined, and any', () => {
-		assertProperty(Arb.native, (x: Node) => implies(!x.equals(t_any) && !x.equals(t_never) && !x.equals(t_unknown) && !x.equals(t_undefined), !t_never.isSubtypeOf(x)));
+		assertProperty(Arb.native, (x: Node) => iff(!x.equals(t_any) && !x.equals(t_never) && !x.equals(t_unknown) && !x.equals(t_undefined), !t_never.isSubtypeOf(x)));
 	});
 
 	it('no types are subtype of never except any and never', () => {
-		assertProperty(Arb.native, (x: Node) => implies(!x.equals(t_any) && !x.equals(t_never), !x.isSubtypeOf(t_never)));
+		assertProperty(Arb.native, (x: Node) => iff(!x.equals(t_any) && !x.equals(t_never), !x.isSubtypeOf(t_never)));
 	});
 
 	it('undefined is subtype of no type except undefined, unknown, and any', () => {
-		assertProperty(Arb.native, (x: Node) => implies(!x.equals(t_any) && !x.equals(t_unknown) && !x.equals(t_undefined), !t_undefined.isSubtypeOf(x)));
+		assertProperty(Arb.native, (x: Node) => iff(!x.equals(t_any) && !x.equals(t_unknown) && !x.equals(t_undefined), !t_undefined.isSubtypeOf(x)));
 	});
 
 	it('literals are subtype of their Primitive type', () => {
 		assertProperty(Arb.literal, (x: Node) => {
-				return implies(x instanceof BooleanLiteral, x.isSubtypeOf(t_boolean)) &&
-					implies(x instanceof NumberLiteral, x.isSubtypeOf(t_number)) &&
-					implies(x instanceof StringLiteral, x.isSubtypeOf(t_string)); // TODO: need to add string literal arb
+				return iff(x instanceof BooleanLiteral, x.isSubtypeOf(t_boolean)) &&
+					iff(x instanceof NumberLiteral, x.isSubtypeOf(t_number)) &&
+					iff(x instanceof StringLiteral, x.isSubtypeOf(t_string)); // TODO: need to add string literal arb
 			}
 		);
 	});
@@ -109,12 +114,27 @@ describe("Subtype", () => {
 
 	it('intersection: a subset of an intersection is a supertype of the intersection', () => {
 		let items = [
-			union(t_number, t_string, t_any),
+			t_number,
+			t_string,
+			t_boolean,
+			arr(t_number),
+			tuple(t_number, t_string),
+			arr(arr(arr(t_number))),
+			tuple(tuple(t_number, t_string), t_boolean),
+			arr(tuple(t_number, t_string)),
+			tuple(arr(t_number), t_string, tuple(t_number, t_string)),
 			union(t_number, t_string, t_boolean),
 		];
 		let original = intersection(...items);
 		let subintersections = powerset(items).map(x => intersection(...x));
 		expect(subintersections.every(x => original.isSubtypeOf(x))).toBeTruthy();
+	});
+
+	it('intersection subtype', () => {
+		let inter1 = intersection(t_number, t_string, t_boolean);
+		let inter2 = intersection(t_number, t_string);
+		expect(inter1.isSubtypeOf(inter2)).toBeTruthy();
+		expect(inter2.isSubtypeOf(inter1)).toBeFalsy();
 	});
 
 	it("should work", () => {
@@ -123,23 +143,8 @@ describe("Subtype", () => {
 			(define b (string | boolean))
 			(define c (a & b))
 		`);
+
+		expect(env['c']).toBeDefined();
 	});
 
 });
-
-describe("Tuple", () => {
-	beforeEach(() => {
-		env = {};
-	});
-
-	it("isSubsetOf", () => {
-		run(`
-			(define a [string, string, ...(1 | 2)[], number, boolean, 1, 2, true, 1, 'hello', true, "world", "fair", ...("0" | "1")[]])
-			(define b [...string[], ...number[], ...(boolean | number)[], 1, "hello", true, ...string[]])
-			(define b2 [string, string, ...(string | number | boolean)[]])
-			(define c (=? a b))
-			(define c2 (=? a b2))
-		`);
-	});
-});
-

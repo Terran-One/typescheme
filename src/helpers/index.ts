@@ -16,8 +16,10 @@ import {Parser} from '../parser';
 import * as fc from 'fast-check';
 import {Arbitrary} from "fast-check";
 
-export function run(source: string, env?: any): any {
-	return cg(env || {}, Parser.parse(source));
+export function configureRun(getEnv: any, writeEnv: any): any {
+	return (source: string): any => {
+		writeEnv(cg(getEnv(), Parser.parse(source)));
+	}
 }
 
 export function union(...types: any[]): any {
@@ -73,6 +75,10 @@ export function assertProperty(...args: [...any[], (...x: any[]) => boolean]) {
 
 export function implies(a: boolean, b: boolean) {
 	return !a || b;
+}
+
+export function iff(a: boolean, b: boolean) {
+	return implies(a, b) && implies(b, a);
 }
 
 export function powerset<T extends any[] | List<any> | TupleLiteral>(a: T): T[] {
